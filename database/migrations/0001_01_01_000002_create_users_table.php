@@ -19,6 +19,11 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
+            // Kolom role_id bertipe unsignedBigInteger
+            $table->unsignedBigInteger('id_role');
+
+            // Tambahkan foreign key constraint
+            $table->foreign('id_role')->references('id')->on('roles')->onDelete('cascade');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
