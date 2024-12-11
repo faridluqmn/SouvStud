@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\RoleModel;
 
 class User extends Authenticatable
 {
@@ -22,6 +23,12 @@ class User extends Authenticatable
         'email',
         'password',
     ];
+
+    // Relasi ke tabel keranjangs
+    public function keranjangs()
+    {
+        return $this->hasMany(Keranjang::class, 'id_user');
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -44,5 +51,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function role()
+    {
+        return $this->belongsTo(RoleModel::class);
     }
 }
