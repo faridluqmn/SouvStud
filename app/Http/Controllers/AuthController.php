@@ -9,6 +9,34 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
+    // Method untuk menampilkan form login
+    public function loginForm()
+    {
+        return view('auth.login');
+    }
+     // Method untuk Login
+     public function login(Request $request)
+     {
+         // Validasi input
+         $request->validate([
+             'email' => 'required|email',
+             'password' => 'required|min:4',
+         ]);
+
+         // Cek kredensial
+         if (Auth::attempt($request->only('email', 'password'))) {
+             return redirect()->route('dashboard');
+         }
+
+         return back()->withErrors(['email' => 'Invalid credentials'])->withInput();
+     }
+
+    // Method untuk menampilkan form register
+    public function registerForm()
+    {
+        return view('auth.register');
+    }
+
     // Method untuk Register
     public function register(Request $request)
     {
@@ -16,7 +44,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:8|confirmed',
+            'password' => 'required|min:4|confirmed',
         ]);
 
         // Membuat user baru
@@ -29,23 +57,19 @@ class AuthController extends Controller
         // Login setelah register
         Auth::login($user);
 
-        return redirect('auth.login');
+        return redirect()->route('login');
     }
 
-    // Method untuk Login
-    public function login(Request $request)
+    public function logout(Request $request)
     {
-        // Validasi input
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:8',
-        ]);
+        // Logout pengguna
+        Auth::logout();
 
-        // Cek kredensial
-        if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect('/');
-        }
+        // Hapus sesi
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
-        return back()->withErrors(['email' => 'Invalid credentials'])->withInput();
+        // Redirect ke halaman login
+        return redirect()->route('login');
     }
 }
