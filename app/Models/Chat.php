@@ -7,7 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Chat extends Model
 {
-    use HasFactory;
+    protected $fillable = [
+        'customization_id',
+        'sender_id',
+        'receiver_id',
+        'message',
+    ];
 
-    protected $fillable = ['sender_id', 'receiver_id', 'message', 'is_read'];
+    public function customization()
+    {
+        return $this->belongsTo(Customization::class);
+    }
 }
