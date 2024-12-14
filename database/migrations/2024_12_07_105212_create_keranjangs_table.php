@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('id_user'); // Foreign key ke tabel users
             $table->unsignedBigInteger('id_barang'); // Foreign key ke tabel barangs
-            $table->int('jumlah_barang');
+            $table->integer('jumlah_barang');
             // Tambahkan foreign key constraints
             $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_barang')->references('id')->on('barangs')->onDelete('cascade');

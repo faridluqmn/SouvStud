@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
             align-items: center;
             height: 100vh;
         }
+
         .login-container {
             width: 100%;
             max-width: 400px;
@@ -25,15 +27,18 @@
             border-radius: 8px;
             text-align: center;
         }
+
         .login-container h1 {
             font-size: 2rem;
             margin-bottom: 20px;
             font-weight: 700;
         }
+
         .login-container p {
             color: #999;
             margin-bottom: 30px;
         }
+
         .login-container input {
             width: 90%;
             padding: 12px 20px;
@@ -42,10 +47,11 @@
             border-radius: 5px;
             font-size: 1rem;
         }
+
         .login-container button {
             width: 100%;
             padding: 12px;
-            background-color:rgb(0, 0, 0);
+            background-color: rgb(0, 0, 0);
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -53,33 +59,41 @@
             cursor: pointer;
             font-weight: 700;
         }
+
         .login-container button:hover {
-            background-color:rgb(91, 92, 92);
+            background-color: rgb(91, 92, 92);
         }
+
         .login-container a {
             display: block;
             margin-top: 20px;
-            color:rgb(1, 1, 1);
+            color: rgb(1, 1, 1);
             text-decoration: none;
         }
+
         .login-container a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <h1>Sign Up</h1>
         <p>Welcome back! Create your new account.</p>
         <form action="{{ route('regis.submit') }}" method="POST">
-            @csrf
-            <input type="name" name="name" placeholder="Username" required>
+            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+            <input type="text" name="name" placeholder="Username" required>
             <input type="email" name="email" placeholder="Email Address" required>
             <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Login</button>
+            <input type="password" name="password_confirmation" placeholder="Confirm Password" required>
+
+            <button type="submit">Sign Up</button>
         </form>
         <a href="#">Forgot Password?</a>
         <a href="{{ route('login') }}">Login</a>
     </div>
 </body>
+
 </html>

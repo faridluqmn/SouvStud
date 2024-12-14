@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +17,7 @@
             align-items: center;
             height: 100vh;
         }
+
         .login-container {
             width: 100%;
             max-width: 400px;
@@ -25,15 +27,18 @@
             border-radius: 8px;
             text-align: center;
         }
+
         .login-container h1 {
             font-size: 2rem;
             margin-bottom: 20px;
             font-weight: 700;
         }
+
         .login-container p {
             color: #999;
             margin-bottom: 30px;
         }
+
         .login-container input {
             width: 90%;
             padding: 12px 20px;
@@ -42,6 +47,7 @@
             border-radius: 5px;
             font-size: 1rem;
         }
+
         .login-container button {
             width: 100%;
             padding: 12px;
@@ -53,24 +59,35 @@
             cursor: pointer;
             font-weight: 700;
         }
+
         .login-container button:hover {
             background-color: rgb(91, 92, 92);
         }
+
         .login-container a {
             display: block;
             margin-top: 20px;
             color: rgb(1, 1, 1);
             text-decoration: none;
         }
+
         .login-container a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
     <div class="login-container">
         <h1>Login</h1>
         <p>Welcome back! Please login to your account.</p>
+
+        @if (session('success'))
+            <div style="color: green; margin-bottom: 20px;">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <form action="{{ route('login.submit') }}" method="POST">
             @csrf
             <input type="email" name="email" placeholder="Email Address" required>
@@ -80,5 +97,7 @@
         <a href="#">Forgot Password?</a>
         <a href="{{ route('register') }}">Create a New Account</a>
     </div>
+
 </body>
+
 </html>

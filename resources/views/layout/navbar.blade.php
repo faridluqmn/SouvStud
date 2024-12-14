@@ -40,7 +40,7 @@
                 <div class="menu-desktop">
                     <ul class="main-menu">
                         <li class="active-menu">
-                            <a href="index.html">Home</a>
+                            <a href="dashboard">Home</a>
                             <ul class="sub-menu">
                                 <li><a href="index.html">Homepage 1</a></li>
                                 <li><a href="home-02.html">Homepage 2</a></li>
@@ -61,11 +61,11 @@
                         </li>
 
                         <li>
-                            <a href="about.html">About</a>
+                            <a href="customizations">Custom</a>
                         </li>
 
                         <li>
-                            <a href="contact.html">Contact</a>
+                            <a href="logout">Logout</a>
                         </li>
                     </ul>
                 </div>

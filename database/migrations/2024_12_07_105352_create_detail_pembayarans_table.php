@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_barang'); // Foreign key ke tabel barangs
             $table->unsignedBigInteger('id_keranjang'); // Foreign key ke tabel keranjangs
             $table->unsignedBigInteger('id_pembayaran'); // Foreign key ke tabel pembayarans
-            $table->int('jumlah_barang');
+            $table->integer('jumlah_barang');
             $table->decimal('harga_barang');
             $table->decimal('subtotal');
             // Foreign key constraints
