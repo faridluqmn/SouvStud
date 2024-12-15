@@ -1,4 +1,4 @@
-@extends('layout.app')
+<!-- @extends('layout.app')
 
 @section('content')
 <div class="container">
@@ -20,4 +20,4 @@
         <button type="submit" class="btn btn-primary">Send</button>
     </form>
 </div>
-@endsection
+@endsection -->

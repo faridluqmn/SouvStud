@@ -1,45 +1,35 @@
-@extends('layout')
+@extends('layout.app')
 
 @section('content')
-<div class="container mt-5 mb-5">
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="text-center mb-4">Chat dengan {{ $receiver->name }}</h2>
+<!-- <style>
+    .container {
+        margin-top: 100px;
+        max-width: 800px;
+    }
 
-            <div class="chat-box border p-3 rounded" style="background-color: #f8f9fa; max-height: 400px; overflow-y: auto; margin-bottom: 20px;">
-                @foreach($chats as $chat)
-                    <div class="chat-message {{ $chat->sender_id == auth()->id() ? 'sent' : 'received' }} mb-3 p-2 rounded" style="max-width: 75%;">
-                        <p style="margin-bottom: 0;">{{ $chat->message }}</p>
-                        <small class="text-muted">{{ $chat->created_at->format('d-m-Y H:i:s') }}</small>
-                    </div>
-                @endforeach
-            </div>
+    .chat-box {
+        background-color: #f8f9fa;
+        height: 450px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        overflow-y: auto;
+    }
 
-            <form action="{{ route('chat.store', $receiver->id) }}" method="POST" class="form-inline">
-                @csrf
-                <div class="input-group w-100">
-                    <input type="text" name="message" class="form-control" placeholder="Tulis pesan..." required>
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit">Kirim</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+    .chat-message {
+        margin-bottom: 15px;
+    }
 
-<style>
-    .chat-message.sent {
-        background-color: #d1e7dd;
-        align-self: flex-end;
+    .text-right {
         text-align: right;
     }
-    .chat-message.received {
-        background-color: #f8d7da;
-        align-self: flex-start;
-        text-align: left;
+
+    .input-group {
+        margin-top: 10px;
     }
+<<<<<<< Updated upstream
 </style>
+<<<<<<< HEAD
 @endsection
 
 // Controller tetap sama seperti yang Anda berikan sebelumnya
@@ -47,3 +37,36 @@
 // Pastikan Anda sudah memodifikasi layout `cozastore.layout` sesuai template Coza Store
 
 // Migration tetap sama seperti yang Anda berikan sebelumnya
+=======
+@endsection
+>>>>>>> 5bf4f071861607f9f8b8b8ea4441d3789ff3f026
+=======
+</style> -->
+
+<div class="container mt-5">
+    <!-- Chat Box -->
+    <div class="chat-box border rounded mt-3">
+        @forelse($chats as $chat)
+        <div class="chat-message {{ $chat->sender_id == auth()->id() ? 'text-right' : '' }}">
+            <strong>{{ $chat->sender_id == auth()->id() ? 'You' : $receiver->name }}:</strong>
+            <p class="mb-1">{{ $chat->message }}</p>
+            <small class="text-muted">{{ $chat->created_at->format('H:i') }}</small>
+        </div>
+        @empty
+        <p class="text-center text-muted">No messages yet. Start the conversation!</p>
+        @endforelse
+    </div>
+
+    <!-- Input Form -->
+    <form action="{{ route('chat.store', $receiver->id) }}" method="POST">
+        @csrf
+        <div class="input-group">
+            <input type="text" name="message" class="form-control" placeholder="Type your message here..." required>
+            <div class="input-group-append">
+                <button class="btn btn-dark" type="submit">Send</button>
+            </div>
+        </div>
+    </form>
+</div>
+@endsection
+>>>>>>> Stashed changes

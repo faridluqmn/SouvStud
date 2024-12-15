@@ -75,7 +75,6 @@ class AuthController extends Controller
         return redirect()->route('login');
     }
 
-
 //     public function register(Request $request)
 //     {
 //         // Validasi input
@@ -110,7 +109,7 @@ class AuthController extends Controller
 //         if ($request->otp == Session::get('otp')) {
 //             $userData = Session::get('user_data');
 //             // @dd($userData);
-            
+
 //             // Simpan pengguna ke database
 //             $user = User::create([
 //                 'name' => $userData['name'],

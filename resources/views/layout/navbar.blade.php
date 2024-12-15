@@ -33,7 +33,7 @@
 
                 <!-- Logo desktop -->
                 <a href="#" class="logo">
-                    <img src="images/icons/logo-01.png" alt="IMG-LOGO">
+                    <img src="{{ asset('images/icons/logosovstud.png') }}" alt="IMG-LOGO" style="width: 130px; height: auto;">
                 </a>
 
                 <!-- Menu desktop -->
@@ -81,11 +81,9 @@
                         <i class="zmdi zmdi-shopping-cart"></i>
                     </div>
 
-                    <a href="#"
-                        class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"
-                        data-notify="0">
-                        <i class="zmdi zmdi-favorite-outline"></i>
-                    </a>
+                    <a href="/chat/{{ auth()->user()->id }}"
+                        class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
+                        <i class="zmdi zmdi-comment-outline"></i>
                 </div>
             </nav>
         </div>
@@ -95,7 +93,7 @@
     <div class="wrap-header-mobile">
         <!-- Logo moblie -->
         <div class="logo-mobile">
-            <a href="index.html"><img src="images/icons/logo-01.png" alt="IMG-LOGO"></a>
+            <a href="index.html"><img src="{{ asset('images/icons/logo-01.png')}}" alt="IMG-LOGO"></a>
         </div>
 
         <!-- Icon header -->
@@ -193,7 +191,7 @@
     <div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
         <div class="container-search-header">
             <button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
-                <img src="images/icons/icon-close2.png" alt="CLOSE">
+                <img src="{{ asset('images/icons/icon-close2.png') }}" alt="CLOSE">
             </button>
 
             <form class="wrap-search-header flex-w p-l-15">

@@ -9,6 +9,9 @@
         <!-- Header -->
         @include('layout.navbar')
 
+        <!-- CSS -->
+        @include('layout.css')
+
         <!-- Content -->
         <main style="flex: 1; margin-top: 70px;"> <!-- Sesuaikan margin-top dengan tinggi navbar -->
             <!-- Cart -->
@@ -22,6 +25,7 @@
 
             <!-- Product -->
             @yield('product')
+
             @yield('content')
         </main>
 
