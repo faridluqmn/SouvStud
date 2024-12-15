@@ -5,7 +5,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\GuestMiddleware;
 use App\Http\Controllers\ChatController;
-use App\Http\Controllers\CustomizationController;       
+use App\Http\Controllers\CustomizationController;   
+use App\Http\Controllers\KeranjangController;    
 
 Route::middleware(GuestMiddleware::class)->group(function () {
     Route::get('/', [AuthController::class, 'loginForm'])->name('login');
@@ -22,6 +23,7 @@ Route::middleware(GuestMiddleware::class)->group(function () {
 
 });
 
+
 // Routes
 // Route::get('/customizations', [CustomizationController::class, 'index'])->name('customizations.index');
 // Route::get('/customizations/create', [CustomizationController::class, 'create'])->name('customizations.create');
@@ -30,5 +32,13 @@ Route::middleware(GuestMiddleware::class)->group(function () {
 // Route::post('/customizations/chat/send', [CustomizationController::class, 'sendMessage'])->name('customizations.chat.send');
 
 Route::get('dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
+
+Route::middleware(['auth'])->group(function () {
+    // Route to show the cart (keranjang index)
+    Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
+    
+    // Route to redirect to the cart from the dashboard (keranjang redirect)
+    Route::get('/keranjang/redirect', [KeranjangController::class, 'redirectToCart'])->name('keranjang.redirect');
+});
 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
