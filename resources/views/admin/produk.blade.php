@@ -32,7 +32,8 @@
                     <nav class="limiter-menu-desktop container">
                         <!-- Logo desktop -->
                         <a href="#" class="logo">
-                            <img src="images/logosovstud.png" alt="IMG-LOGO-SOUVSTUD" style="width: 150px; height: auto;">
+                            <img src="images/logosovstud.png" alt="IMG-LOGO-SOUVSTUD"
+                                style="width: 150px; height: auto;">
                         </a>
 
                         <!-- Menu desktop -->
@@ -46,10 +47,10 @@
                                         <li><a href="kupon">Coupons</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="product.html">Shop</a></li>
-                                <li><a href="blog.html">Blog</a></li>
-                                <li><a href="about.html">About</a></li>
+                                <li><a href="order">Order</a></li>
+                                <li><a href="data-user">User</a></li>
                                 <li><a href="/chat/{{ auth()->user()->id }}">Message</a></li>
+                                <li><a href="about.html">Setting</a></li>
                             </ul>
                         </div>
 
@@ -72,14 +73,18 @@
                     </div>
 
                     <div class="wg-box">
-                        <div class="actions-section">
-                            <form class="form-search">
-                                <input type="text" placeholder="Search here..." name="name" required>
-                                <button type="submit"><i class="icon-search"></i> Search</button>
+                        <!-- User Search Section -->
+                        <div class="search-section">
+                            <form method="GET" action="{{ route('userlog') }}">
+                                <input type="text" name="search" placeholder="Search Users..."
+                                    value="{{ request('search') }}">
+                                <button type="submit">Search</button>
                             </form>
-                            <!-- Trigger Modal -->
-                            <button class="add-new-btn" onclick="openModal()">Add Barang</button>
+                            <button class="add-new-btn" href="javascript:void(0)" onclick="openModal()"><i
+                                    class="icon-plus"></i>
+                                Add Produk</button>
                         </div>
+
 
                         <div class="wg-table">
                             <table class="styled-table">
@@ -121,20 +126,12 @@
                                             </td>
                                             <td>{{ $item->jumlah_stok }}</td>
                                             <td class="text-center">
-                                                <!-- Detail Trigger -->
-                                                <button type="button" class="btn btn-sm btn-info"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#detailModal{{ $item->id }}">
-                                                    <i class="bx bx-info-circle"></i> Detail
-                                                </button>
-
                                                 <!-- Edit Trigger -->
                                                 <button type="button" class="btn btn-sm btn-warning"
                                                     data-bs-toggle="modal"
                                                     data-bs-target="#editModal{{ $item->id }}">
                                                     <i class="bx bx-edit"></i> Edit
                                                 </button>
-
                                                 <!-- Delete Form -->
                                                 <form action="{{ route('product.destroy', $item->id) }}" method="POST"
                                                     style="display: inline;">
@@ -147,111 +144,6 @@
                                                 </form>
                                             </td>
                                         </tr>
-
-                                        <!-- Detail Modal -->
-                                        <div class="modal fade" id="detailModal{{ $item->id }}" tabindex="-1"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog modal-lg">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Detail Produk</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <div class="row">
-                                                            <div class="col-md-4">
-                                                                @if ($item->link_img)
-                                                                    <img src="{{ asset('storage/' . $item->link_img) }}"
-                                                                        class="img-fluid" alt="Foto Produk">
-                                                                @else
-                                                                    <p>No Image</p>
-                                                                @endif
-                                                            </div>
-                                                            <div class="col-md-8">
-                                                                <h5>{{ $item->nama_barang }}</h5>
-                                                                <p><strong>Kategori:</strong>
-                                                                    {{ $item->nama_kategori }}</p>
-                                                                <p><strong>Deskripsi:</strong> {{ $item->deskripsi }}
-                                                                </p>
-                                                                <p><strong>Harga:</strong> Rp
-                                                                    {{ number_format($item->harga, 0, ',', '.') }}</p>
-                                                                <p><strong>Status:</strong>
-                                                                    {{ $item->status == 'Available' ? 'Available' : 'Not Available' }}
-                                                                </p>
-                                                                <p><strong>Jumlah Stok:</strong>
-                                                                    {{ $item->jumlah_stok }}</p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Edit Modal -->
-                                        <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1"
-                                            aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h5 class="modal-title">Edit Produk</h5>
-                                                        <button type="button" class="btn-close"
-                                                            data-bs-dismiss="modal" aria-label="Close"></button>
-                                                    </div>
-                                                    <form action="{{ route('product.update', $item->id) }}"
-                                                        method="POST" enctype="multipart/form-data">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="modal-body">
-                                                            <div class="mb-3">
-                                                                <label for="nama_barang" class="form-label">Nama
-                                                                    Barang</label>
-                                                                <input type="text" class="form-control"
-                                                                    name="nama_barang"
-                                                                    value="{{ $item->nama_barang }}" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="harga" class="form-label">Harga</label>
-                                                                <input type="number" class="form-control"
-                                                                    name="harga" value="{{ $item->harga }}"
-                                                                    required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="status"
-                                                                    class="form-label">Status</label>
-                                                                <select class="form-select" name="status" required>
-                                                                    <option value="Available"
-                                                                        {{ $item->status == 'Available' ? 'selected' : '' }}>
-                                                                        Available</option>
-                                                                    <option value="Not Available"
-                                                                        {{ $item->status == 'Not Available' ? 'selected' : '' }}>
-                                                                        Not Available</option>
-                                                                </select>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="jumlah_stok" class="form-label">Jumlah
-                                                                    Stok</label>
-                                                                <input type="number" class="form-control"
-                                                                    name="jumlah_stok"
-                                                                    value="{{ $item->jumlah_stok }}" required>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="link_img"
-                                                                    class="form-label">Gambar</label>
-                                                                <input type="file" class="form-control"
-                                                                    name="link_img">
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary"
-                                                                data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit"
-                                                                class="btn btn-primary">Update</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
                                     @endforeach
                                 </tbody>
                             </table>
@@ -344,23 +236,6 @@
                 </div>
             </div>
 
-            {{-- Modal Detail --}}
-            <div id="detailModal" class="modal">
-                <div class="modal-content">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="detailModalLabel">Detail Item</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Isi detail item di sini -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
         </main>
 
         <!-- Footer -->
@@ -373,6 +248,172 @@
         </span>
     </div>
     @include('layout.js')
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+
+        .wrapper {
+            margin-top: 20px;
+        }
+
+        /* Title Styling */
+        .header-section {
+            text-align: center;
+            /* Center the title */
+            margin-bottom: 30px;
+        }
+
+        .header-section .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #2c3e50;
+            /* Darker color for the title */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+            /* New font applied */
+        }
+
+        .breadcrumbs {
+            text-align: center;
+            font-size: 14px;
+            color: #7f8c8d;
+            /* Subtle gray color for breadcrumbs */
+        }
+
+        .breadcrumbs li {
+            display: inline;
+            margin-right: 5px;
+        }
+
+        .breadcrumbs li i {
+            color: #7f8c8d;
+        }
+
+        /* Table Styling */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .styled-table th {
+            background-color: #34495e;
+            /* Darker header background */
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .styled-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Search Box Styling */
+        .search-section {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .search-section form {
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px 10px;
+            background-color: #fff;
+        }
+
+        .search-section input {
+            border: none;
+            padding: 8px 15px;
+            outline: none;
+            font-size: 14px;
+            border-radius: 5px 0 0 5px;
+            width: 200px;
+        }
+
+        .search-section button {
+            background-color: #2c3e50;
+            /* Dark blue color for button */
+            border: none;
+            padding: 8px 15px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .search-section button:hover {
+            background-color: #2e6eaf;
+            /* Darker blue on hover */
+        }
+
+        /* Pagination Styling */
+        .pagination {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 5px;
+            background-color: #2c3e50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .pagination a:hover {
+            background-color: #34495e;
+            /* Darker blue on hover */
+        }
+
+        /* Button Styling */
+        .btn-delete {
+            background-color: #e74c3c;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+            /* Darker red on hover */
+        }
+
+        /* Add extra spacing for mobile screens */
+        @media (max-width: 768px) {
+
+            .styled-table th,
+            .styled-table td {
+                padding: 8px;
+            }
+
+            .search-section input {
+                width: 150px;
+            }
+        }
+    </style>
 
     <!-- Modal Styling -->
     <style>
@@ -545,6 +586,7 @@
             font-size: 14px;
         }
     </style>
+
     <script>
         function openModal() {
             document.getElementById('addProductModal').style.display = 'flex';
@@ -562,6 +604,7 @@
             }
         };
     </script>
+    
     <script>
         document.getElementById('imageUpload').addEventListener('change', function(event) {
             const previewContainer = document.getElementById('previewContainer');

@@ -32,7 +32,7 @@
                     <nav class="limiter-menu-desktop container">
                         <!-- Logo desktop -->
                         <a href="#" class="logo">
-                            <img src="{{ asset('images/logosovstud.png')}}" alt="IMG-LOGO-SOUVSTUD"
+                            <img src="images/logosovstud.png" alt="IMG-LOGO-SOUVSTUD"
                                 style="width: 150px; height: auto;">
                         </a>
 
@@ -47,10 +47,10 @@
                                         <li><a href="kupon">Coupons</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="product.html">Shop</a></li>
-                                <li><a href="blog.html">Blog</a></li>
-                                <li><a href="about.html">About</a></li>
+                                <li><a href="order">Order</a></li>
+                                <li><a href="data-user">User</a></li>
                                 <li><a href="/chat/{{ auth()->user()->id }}">Message</a></li>
+                                <li><a href="about.html">Setting</a></li>
                             </ul>
                         </div>
 
@@ -68,35 +68,43 @@
                         <ul class="breadcrumbs">
                             <li><a href="#">Home</a></li>
                             <li><i class="icon-chevron-right"></i></li>
-                            <li>Categories</li>
+                            <li>Coupons</li>
                         </ul>
                     </div>
 
                     <div class="wg-box">
-                        <div class="actions-section">
-                            <form class="form-search">
-                                <input type="text" placeholder="Search here..." name="name" required>
-                                <button type="submit"><i class="icon-search"></i> Search</button>
+                        <!-- User Search Section -->
+                        <div class="search-section">
+                            <form method="GET" action="{{ route('userlog') }}">
+                                <input type="text" name="search" placeholder="Search Users..."
+                                    value="{{ request('search') }}">
+                                <button type="submit">Search</button>
                             </form>
-                            <a class="add-new-btn" href="javascript:void(0)" onclick="openModal()"><i
-                                    class="icon-plus"></i> Add Categories</a>
+                            <button class="add-new-btn" href="javascript:void(0)" onclick="openModal()"><i
+                                    class="icon-plus"></i>
+                                Add Kupon</button>
                         </div>
+
 
                         <div class="wg-table">
                             <table class="styled-table">
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Nama Kategori</th>
-                                        <th>Deskripsi</th>
+                                        <th>Coupon Code</th>
+                                        <th>Type</th>
+                                        <th>Value</th>
+                                        <th>Expired</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($coupons as $item)
                                         <tr>
                                             <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $item->nama_kategori }}</td>
-                                            <td>{{ $kategori->deskripsi }}</td>
+                                            <td>{{ $item->kode }}</td>
+                                            <td>{{ $item->tipe }}</td>
+                                            <td>{{ $item->value }}</td>
+                                            <td>{{ $item->exp_date }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -106,29 +114,40 @@
                 </div>
             </div>
 
-
-            <!-- Add Category Modal -->
-            <div class="modal" id="addCategoryModal" style="display: none;">
+            <!-- Add Coupon Modal -->
+            <div class="modal" id="addCouponModal">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4>Add New Category</h4>
+                        <h4>Add New Coupon</h4>
                         <span class="close-modal" onclick="closeModal()">&times;</span>
                     </div>
                     <div class="modal-body">
-                        <form id="addCategoryForm" action="{{ route('categories.store') }}" method="POST">
+                        <form id="addCouponForm" action="{{ route('coupons.store') }}" method="POST">
                             @csrf
                             <div class="form-group">
-                                <label for="nama_kategori">Category Name</label>
-                                <input type="text" id="nama_kategori" name="nama_kategori" class="form-control"
-                                    placeholder="Enter category name" required>
+                                <label for="kode">Coupon Code</label>
+                                <input type="text" id="kode" name="kode" class="form-control"
+                                    placeholder="Enter coupon code" required>
                             </div>
                             <div class="form-group">
-                                <label for="deskripsi">Description</label>
-                                <textarea id="deskripsi" name="deskripsi" class="form-control" placeholder="Enter description" required></textarea>
+                                <label for="tipe">Type</label>
+                                <select id="tipe" name="tipe" class="form-control" required>
+                                    <option value="discount">Fixed</option>
+                                    <option value="free_shipping">Persen</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="value">Value</label>
+                                <input type="text" id="value" name="value" class="form-control"
+                                    placeholder="Enter coupon value" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="exp_date">Expiration Date</label>
+                                <input type="date" id="exp_date" name="exp_date" class="form-control" required>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                                <button type="submit" class="btn btn-primary">Add Category</button>
+                                <button type="submit" class="btn btn-primary">Add Coupon</button>
                             </div>
                         </form>
                     </div>
@@ -147,6 +166,208 @@
         </span>
     </div>
     @include('layout.js')
+
+    <script>
+        // Open modal function
+        function openModal() {
+            document.getElementById('addCouponModal').style.display = 'flex';
+        }
+
+        // Close modal function
+        function closeModal() {
+            document.getElementById('addCouponModal').style.display = 'none';
+        }
+    </script>
+    <style>
+        /* Center modal on screen */
+        .modal {
+            display: none;
+            /* Hidden by default */
+            position: fixed;
+            /* Fixed positioning */
+            z-index: 1;
+            /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%;
+            /* Full width */
+            height: 100%;
+            /* Full height */
+            background-color: rgba(0, 0, 0, 0.4);
+            /* Background overlay */
+            justify-content: center;
+            /* Center horizontally */
+            align-items: center;
+            /* Center vertically */
+        }
+    </style>
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f7fc;
+            color: #333;
+        }
+
+        .wrapper {
+            margin-top: 20px;
+        }
+
+        /* Title Styling */
+        .header-section {
+            text-align: center;
+            /* Center the title */
+            margin-bottom: 30px;
+        }
+
+        .header-section .section-title {
+            font-size: 36px;
+            font-weight: 700;
+            color: #2c3e50;
+            /* Darker color for the title */
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            font-family: 'Poppins', sans-serif;
+            /* New font applied */
+        }
+
+        .breadcrumbs {
+            text-align: center;
+            font-size: 14px;
+            color: #7f8c8d;
+            /* Subtle gray color for breadcrumbs */
+        }
+
+        .breadcrumbs li {
+            display: inline;
+            margin-right: 5px;
+        }
+
+        .breadcrumbs li i {
+            color: #7f8c8d;
+        }
+
+        /* Table Styling */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e1e1e1;
+        }
+
+        .styled-table th {
+            background-color: #34495e;
+            /* Darker header background */
+            color: #fff;
+            text-transform: uppercase;
+        }
+
+        .styled-table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Search Box Styling */
+        .search-section {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .search-section form {
+            display: flex;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px 10px;
+            background-color: #fff;
+        }
+
+        .search-section input {
+            border: none;
+            padding: 8px 15px;
+            outline: none;
+            font-size: 14px;
+            border-radius: 5px 0 0 5px;
+            width: 200px;
+        }
+
+        .search-section button {
+            background-color: #2c3e50;
+            /* Dark blue color for button */
+            border: none;
+            padding: 8px 15px;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+        }
+
+        .search-section button:hover {
+            background-color: #2e6eaf;
+            /* Darker blue on hover */
+        }
+
+        /* Pagination Styling */
+        .pagination {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .pagination a {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 5px;
+            background-color: #2c3e50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .pagination a:hover {
+            background-color: #34495e;
+            /* Darker blue on hover */
+        }
+
+        /* Button Styling */
+        .btn-delete {
+            background-color: #e74c3c;
+            border: none;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+            /* Darker red on hover */
+        }
+
+        /* Add extra spacing for mobile screens */
+        @media (max-width: 768px) {
+
+            .styled-table th,
+            .styled-table td {
+                padding: 8px;
+            }
+
+            .search-section input {
+                width: 150px;
+            }
+        }
+    </style>
+
 </body>
 
 </html>

@@ -98,6 +98,13 @@
 <!--===============================================================================================-->
 <script src="path/to/your/script.js"></script>
 <script src="js/main.js"></script>
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Popper.js (jika menggunakan Bootstrap 4) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 
 {{-- <script>
     function openModal(product) {

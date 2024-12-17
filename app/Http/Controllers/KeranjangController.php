@@ -15,13 +15,13 @@ class KeranjangController extends Controller
         $userId = auth()->id();  // Mendapatkan ID user yang sedang login
         $productId = $request->id_barang;  // ID barang yang ingin ditambahkan
         $quantity = $request->jumlah_barang;  // Jumlah barang yang ingin ditambahkan
-    
+
         // Cek apakah barang sudah ada di keranjang
         $existingItem = DB::table('keranjangs')
             ->where('id_user', $userId)
             ->where('id_barang', $productId)
             ->first();
-    
+
         if ($existingItem) {
             // Jika barang sudah ada, update jumlahnya
             DB::table('keranjangs')
@@ -38,10 +38,10 @@ class KeranjangController extends Controller
                 'jumlah_barang' => $quantity
             ]);
         }
-    
+
         return response()->json(['success' => true]);
     }
-    
+
 
     public function checkout(Request $request)
     {
@@ -73,6 +73,10 @@ class KeranjangController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Checkout failed: ' . $e->getMessage());
         }
+    }
+
+    public function withCoupons() {
+        
     }
 
     public function remove($productId)

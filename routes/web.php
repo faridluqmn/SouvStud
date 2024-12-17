@@ -49,7 +49,12 @@ Route::post('/cart/checkout', [KeranjangController::class, 'checkout'])->name('c
 Route::delete('/cart/remove/{productId}', [KeranjangController::class, 'remove'])->name('cart.remove');
 
 //kupon
-Route::get('/kupon', [AdminController::class, 'coupons'])->name('admin.coupons');
+Route::get('/kupon', [AdminController::class, 'coupons'])->name('coupons.index');
+Route::post('/kupon/simpan', [AdminController::class, 'savecoupons'])->name('coupons.store');
+Route::post('/kupon/pakai', [KeranjangController::class, 'withCoupons'])->name('coupons.apply');
+
+Route::get('/data-user', [AdminController::class, 'manageUsers'])->name('userlog');
+Route::delete('admin/users/{user}', [AdminController::class, 'deleteUser'])->name('user.destroy');
 
 
 Route::get('/blog', function () {

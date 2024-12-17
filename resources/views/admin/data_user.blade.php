@@ -59,95 +59,75 @@
             </div>
         </header>
 
-
         <!-- Main Content -->
         <main class="content">
             <div class="main-content-inner">
-                <div class="main-content-wrap">
-                    <div class="header-section">
-                        <h3 class="section-title">Categories</h3>
-                        <ul class="breadcrumbs">
-                            <li><a href="#">Home</a></li>
-                            <li><i class="icon-chevron-right"></i></li>
-                            <li>Categories</li>
-                        </ul>
-                    </div>
+                <div class="header-section">
+                    <h3 class="section-title">DAFTAR PENGGUNA</h3>
+                    <ul class="breadcrumbs">
+                        <li><a href="javascript:history.go(-1)">Home</a></li>
+                        <li><i class="icon-chevron-right"></i></li>
+                        <li>Users</li>
+                    </ul>
+                </div>
 
-                    <!-- User Search Section -->
-                    <div class="search-section">
-                        <form method="GET" action="{{ route('userlog') }}">
-                            <input type="text" name="search" placeholder="Search Users..."
-                                value="{{ request('search') }}">
-                            <button type="submit">Search</button>
-                        </form>
-                        <button class="add-new-btn" href="javascript:void(0)" onclick="openModal()"><i class="icon-plus"></i>
-                            Add Categories</button>
-                    </div>
+                <!-- User Search Section -->
+                <div class="search-section">
+                    <form method="GET" action="{{ route('userlog') }}">
+                        <input type="text" name="search" placeholder="Search Users..."
+                            value="{{ request('search') }}">
+                        <button type="submit">Search</button>
+                    </form>
+                </div>
 
-                    <div class="wg-table">
-                        <table class="styled-table">
-                            <thead>
+                <!-- Users Table -->
+                <div class="users-table">
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Registered At</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($users as $index => $user)
                                 <tr>
-                                    <th>No</th>
-                                    <th>Nama Kategori</th>
-                                    <th>Deskripsi</th>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $user->name }}</td>
+                                    <td>{{ $user->email }}</td>
+                                    <td>{{ $user->created_at }}</td>
+                                    <td>
+                                        <form action="{{ route('user.destroy', $user->id) }}" method="POST"
+                                            style="display:inline;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn-delete">Delete</button>
+                                        </form>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($categories as $kategori)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $kategori->nama_kategori }}</td>
-                                        <td>{{ $kategori->deskripsi }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    <div class="pagination">
+                        {{ $users->links() }}
                     </div>
                 </div>
             </div>
-    </div>
+        </main>
 
-
-    <!-- Add Category Modal -->
-    <div class="modal" id="addCategoryModal" style="display: none;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4>Add New Category</h4>
-                <span class="close-modal" onclick="closeModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <form id="addCategoryForm" action="{{ route('categories.store') }}" method="POST">
-                    @csrf
-                    <div class="form-group">
-                        <label for="nama_kategori">Category Name</label>
-                        <input type="text" id="nama_kategori" name="nama_kategori" class="form-control"
-                            placeholder="Enter category name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="deskripsi">Description</label>
-                        <textarea id="deskripsi" name="deskripsi" class="form-control" placeholder="Enter description" required></textarea>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Add Category</button>
-                    </div>
-                </form>
-            </div>
+        <!-- Back to top -->
+        <div class="btn-back-to-top" id="myBtn">
+            <span class="symbol-btn-back-to-top">
+                <i class="zmdi zmdi-chevron-up"></i>
+            </span>
         </div>
     </div>
 
-    </main>
-
-    <!-- Footer -->
-    </div>
-
-    <!-- Back to top -->
-    <div class="btn-back-to-top" id="myBtn">
-        <span class="symbol-btn-back-to-top">
-            <i class="zmdi zmdi-chevron-up"></i>
-        </span>
-    </div>
     @include('layout.js')
     <style>
         /* General Styling */
@@ -316,23 +296,7 @@
         }
     </style>
 
-    <script>
-        function openModal() {
-            document.getElementById('addCategoryModal').style.display = 'flex';
-        }
 
-        function closeModal() {
-            document.getElementById('addCategoryModal').style.display = 'none';
-        }
-
-        // Optional: Close modal when clicking outside content
-        window.onclick = function(event) {
-            const modal = document.getElementById('addCategoryModal');
-            if (event.target === modal) {
-                modal.style.display = 'none';
-            }
-        };
-    </script>
 </body>
 
 </html>

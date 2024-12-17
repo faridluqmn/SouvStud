@@ -47,8 +47,8 @@
                         <div class="flex-grow-1 mb-3" style="overflow-y: auto; max-height: 60vh; padding-right: 10px;">
                             @forelse($chats as $chat)
                                 <div class="mb-2 {{ $chat->sender_id == auth()->id() ? 'text-right' : '' }}">
-                                    <div class="d-inline-block p-2 rounded"
-                                        style="background-color: {{ $chat->sender_id == auth()->id() ? '#352F44' : '#6E6A77' }}; color: white;">
+                                    <div class="d-inline-block p-2 rounded"  
+                                        style="background-color: {{ $chat->sender_id == auth()->id() ? '#7f8c8d' : '#34495e' }}; color: white;">
                                         <strong>{{ $chat->sender_id == auth()->id() ? 'You' : $receiver->name }}:</strong>
                                         <p class="mb-0">{{ $chat->message }}</p>
                                         @if ($chat->image_path)

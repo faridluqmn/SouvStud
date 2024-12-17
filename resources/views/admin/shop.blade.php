@@ -32,7 +32,8 @@
                     <nav class="limiter-menu-desktop container">
                         <!-- Logo desktop -->
                         <a href="#" class="logo">
-                            <img src="images/logosovstud.png" alt="IMG-LOGO-SOUVSTUD" style="width: 150px; height: auto;">
+                            <img src="images/logosovstud.png" alt="IMG-LOGO-SOUVSTUD"
+                                style="width: 150px; height: auto;">
                         </a>
 
                         <!-- Menu desktop -->
@@ -46,10 +47,10 @@
                                         <li><a href="kupon">Coupons</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="product.html">Shop</a></li>
-                                <li><a href="blog.html">Blog</a></li>
-                                <li><a href="about.html">About</a></li>
+                                <li><a href="order">Order</a></li>
+                                <li><a href="data-user">User</a></li>
                                 <li><a href="/chat/{{ auth()->user()->id }}">Message</a></li>
+                                <li><a href="about.html">Setting</a></li>
                             </ul>
                         </div>
 
@@ -62,7 +63,7 @@
         <main class="content">
             <div class="container">
                 <div class="row">
-                  
+
                 </div>
             </div>
         </main>
