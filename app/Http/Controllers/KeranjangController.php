@@ -11,23 +11,36 @@ class KeranjangController extends Controller
 {
     public function addToCart(Request $request)
     {
-        // Validasi input
-        $request->validate([
-            'id_barang' => 'required|exists:barangs,id', // Pastikan ID barang valid
-            'jumlah_barang' => 'required|integer|min:1', // Pastikan jumlah minimal 1
-        ]);
-
-        // Simpan ke tabel keranjang
-        DB::table('keranjangs')->insert([
-            'id_barang' => $request->id_barang,
-            'jumlah_barang' => $request->jumlah_barang,
-            'id_user' => auth()->id(), // ID pengguna yang login
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
-
-        return response()->json(['success' => true, 'message' => 'Item added to cart successfully!']);
+        $userId = auth()->id();  // Mendapatkan ID user yang sedang login
+        $productId = $request->id_barang;  // ID barang yang ingin ditambahkan
+        $quantity = $request->jumlah_barang;  // Jumlah barang yang ingin ditambahkan
+    
+        // Cek apakah barang sudah ada di keranjang
+        $existingItem = DB::table('keranjangs')
+            ->where('id_user', $userId)
+            ->where('id_barang', $productId)
+            ->first();
+    
+        if ($existingItem) {
+            // Jika barang sudah ada, update jumlahnya
+            DB::table('keranjangs')
+                ->where('id_user', $userId)
+                ->where('id_barang', $productId)
+                ->update([
+                    'jumlah_barang' => $existingItem->jumlah_barang + $quantity
+                ]);
+        } else {
+            // Jika barang belum ada, insert barang baru
+            DB::table('keranjangs')->insert([
+                'id_user' => $userId,
+                'id_barang' => $productId,
+                'jumlah_barang' => $quantity
+            ]);
+        }
+    
+        return response()->json(['success' => true]);
     }
+    
 
     public function checkout(Request $request)
     {

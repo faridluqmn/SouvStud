@@ -52,3 +52,11 @@ Route::get('/dashboard', [DashboardController::class, 'showProducts'])->name('us
 Route::get('/d', function () {
     return view('welcome');
 });
+
+Route::get('/blog', function () {
+    return view('blog');
+});
+
+Route::get('/about', function () {
+    return view('about');
+});

@@ -13,6 +13,7 @@ class CreateChatsTable extends Migration
             $table->unsignedBigInteger('sender_id');
             $table->unsignedBigInteger('receiver_id');
             $table->text('message');
+            $table->string('image_path')->nullable();
             $table->timestamps();
 
             // Foreign keys
@@ -23,6 +24,8 @@ class CreateChatsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('chats');
+        Schema::table('chats', function (Blueprint $table) {
+            $table->dropColumn('image_path'); // Hapus kolom image_path saat rollback
+        });
     }
 }

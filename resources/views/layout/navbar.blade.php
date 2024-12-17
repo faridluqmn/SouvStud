@@ -29,23 +29,18 @@
 
                 <!-- Logo desktop -->
                 <a href="#" class="logo">
-                    <img src="" alt="IMG-LOGO-SOUVSTUD">
+                    <img src="images/logosovstud.png" alt="IMG-LOGO-SOUVSTUD" style="width: 120px; height: auto;">
                 </a>
 
                 <!-- Menu desktop -->
                 <div class="menu-desktop">
                     <ul class="main-menu">
                         <li class="active-menu">
-                            <a href="index.html">Home</a>
-                            <ul class="sub-menu">
-                                <li><a href="index.html">Homepage 1</a></li>
-                                <li><a href="home-02.html">Homepage 2</a></li>
-                                <li><a href="home-03.html">Homepage 3</a></li>
-                            </ul>
+                            <a href="{{ route('user.index')}}">Home</a>
                         </li>
 
                         <li>
-                            <a href="product.html">Shop</a>
+                            <a href="{{ url('')}}">Shop</a>
                         </li>
 
                         <li class="label1" data-label1="hot">
@@ -53,11 +48,11 @@
                         </li>
 
                         <li>
-                            <a href="blog.html">Blog</a>
+                            <a href="{{ url('blog')}}">Blog</a>
                         </li>
 
                         <li>
-                            <a href="about.html">About</a>
+                            <a href="{{ url('about')}}">About</a>
                         </li>
 
                         <li>

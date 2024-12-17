@@ -302,6 +302,7 @@
     }
 </script> --}}
 
+{{-- produk --}}
 <script>
     function openModal(product) {
         // Isi modal dengan data produk
@@ -310,8 +311,14 @@
         document.getElementById('modal-product-price').innerText = `Rp ${product.harga.toLocaleString()}`;
         document.getElementById('modal-product-description').innerText = product.deskripsi;
 
+        // Menampilkan stok yang tersedia
+        document.getElementById('modal-product-stock').innerText = `Stok Tersedia: ${product.jumlah_stok}`;
+
         // Simpan id_produk untuk Add to Cart button
         document.getElementById('add-to-cart-btn').setAttribute('data-id', product.id);
+
+        // Menambahkan pembatasan input quantity
+        document.getElementById('modal-product-quantity').max = product.jumlah_stok; // Max quantity sesuai stok
 
         // Tampilkan modal
         document.getElementById('productModal').style.display = 'block';
@@ -326,34 +333,135 @@
     document.querySelectorAll('.js-hide-modal1').forEach(btn => btn.addEventListener('click', closeModal));
 
     // Event untuk Add to Cart
-    document.getElementById('add-to-cart-btn').addEventListener('click', function () {
+    document.getElementById('add-to-cart-btn').addEventListener('click', function() {
         const productId = this.getAttribute('data-id');
         const jumlah_barang = document.getElementById('modal-product-quantity').value;
 
         fetch('/cart/add', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                id_barang: productId,
-                jumlah_barang: jumlah_barang
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    id_barang: productId,
+                    jumlah_barang: jumlah_barang
+                })
             })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Product added to cart successfully!');
-                closeModal();
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Product added to cart successfully!');
+                    closeModal();
+                } else {
+                    alert('Failed to add product to cart!');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Something went wrong!');
+            });
+    });
+</script>
+{{-- cart --}}
+<script>
+    // Menghitung ulang total harga berdasarkan produk yang dipilih
+    document.querySelectorAll('.product-checkbox').forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            const productId = this.getAttribute('data-id');
+            const productPrice = parseFloat(this.getAttribute('data-price'));
+            const quantity = parseInt(this.getAttribute('data-quantity'));
+            const isChecked = this.checked;
+
+            // Menampilkan tombol hapus jika produk dipilih
+            const deleteButton = document.querySelector(`#cart-item-${productId} .btn-delete-product`);
+            if (isChecked) {
+                deleteButton.style.display = 'inline-block'; // Tampilkan tombol hapus
             } else {
-                alert('Failed to add product to cart!');
+                deleteButton.style.display = 'none'; // Sembunyikan tombol hapus
             }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Something went wrong!');
+
+            // Mengupdate total harga
+            updateTotalPrice(isChecked, productPrice, quantity);
+        });
+    });
+
+    // Fungsi untuk menghitung total harga
+    function updateTotalPrice(isAdding, price, quantity) {
+        let totalPrice = parseFloat(document.getElementById('total-price').innerText.replace(/[^\d.-]/g, ''));
+
+        if (isAdding) {
+            totalPrice += price * quantity; // Tambah harga x jumlah
+        } else {
+            totalPrice -= price * quantity; // Kurangi harga x jumlah
+        }
+
+        // Update total harga
+        document.getElementById('total-price').innerText = totalPrice.toLocaleString();
+    }
+
+    // Checkbox Select All
+    document.getElementById('select-all').addEventListener('change', function() {
+        const isChecked = this.checked;
+
+        // Centang atau hilangkan centang semua produk
+        document.querySelectorAll('.product-checkbox').forEach(function(checkbox) {
+            checkbox.checked = isChecked;
+
+            const productId = checkbox.getAttribute('data-id');
+            const productPrice = parseFloat(checkbox.getAttribute('data-price'));
+            const quantity = parseInt(checkbox.getAttribute('data-quantity'));
+
+            // Update total harga saat checkbox berubah
+            updateTotalPrice(isChecked, productPrice, quantity);
+
+            // Menampilkan tombol hapus jika produk dipilih
+            const deleteButton = document.querySelector(`#cart-item-${productId} .btn-delete-product`);
+            if (isChecked) {
+                deleteButton.style.display = 'inline-block'; // Tampilkan tombol hapus
+            } else {
+                deleteButton.style.display = 'none'; // Sembunyikan tombol hapus
+            }
+        });
+    });
+
+    // Menghapus produk dari keranjang
+    document.querySelectorAll('.btn-delete-product').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const productId = this.getAttribute('data-id');
+            const productPrice = parseFloat(this.getAttribute('data-price'));
+            const quantity = parseInt(document.getElementById(`quantity-${productId}`).innerText);
+
+            // Hapus produk dari keranjang via AJAX
+            fetch(`/cart/remove/${productId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Menghapus elemen produk dari tampilan keranjang
+                        document.querySelector(`#cart-item-${productId}`).remove();
+                        updateTotalPrice(false, productPrice, quantity);
+                        alert('Product removed from cart!');
+                    } else {
+                        alert('Failed to remove product!');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Something went wrong!');
+                });
         });
     });
 </script>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        var chatBox = document.querySelector('.flex-grow-1');
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
+</script>

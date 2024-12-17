@@ -18,26 +18,40 @@ class UserController extends Controller
         }
 
         // Ambil produk dari database
-        $products = DB::table('barangs')->select('id', 'nama_barang', 'deskripsi', 'harga', 'link_img', 'id_kategori')->get();
+        $products = DB::table('barangs')
+            ->join('stok_barangs', 'barangs.id', '=', 'stok_barangs.id') // Menghubungkan barangs dengan stok_barangs
+            ->select(
+                'barangs.id',
+                'barangs.nama_barang',
+                'barangs.deskripsi',
+                'barangs.harga',
+                'barangs.link_img',
+                'barangs.id_kategori',
+                'stok_barangs.jumlah_stok as jumlah_stok'
+            )
+            ->get();
+
+        //kategori
+        $categories = DB::table('kategori_barangs')->get();
 
         // Ambil ID user yang login
         $userId = auth()->id();
 
-        // Ambil data keranjang untuk user yang login
+        // Ambil data keranjang dari tabel keranjangs
         $cartItems = DB::select("
-        SELECT k.id AS cart_id, b.nama_barang, b.link_img, b.harga, k.jumlah_barang
-        FROM keranjangs AS k
-        JOIN barangs AS b ON k.id_barang = b.id
-        WHERE k.id_user = ?
-        ", [$userId]);
+            SELECT k.*, b.nama_barang, b.link_img, b.harga 
+            FROM keranjangs AS k
+            JOIN barangs AS b ON k.id_barang = b.id
+            WHERE k.id_user = ?
+        ", [auth()->id()]); // Filter keranjang untuk user yang sedang login
 
         // Hitung total harga
-        $total = collect($cartItems)->sum(function ($item) {
-            return $item->harga * $item->jumlah_barang;
-        });
+        $total = array_sum(array_map(function ($item) {
+            return $item->jumlah_barang * $item->harga;
+        }, $cartItems));
 
         // Kirim data produk ke view user
-        return view('user.index', compact('products', 'cartItems', 'total'));
+        return view('user.index', compact('products', 'categories', 'cartItems', 'total'));
     }
 
     /**

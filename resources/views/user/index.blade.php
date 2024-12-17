@@ -14,23 +14,23 @@
                         All Products
                     </button>
 
-                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".1">
+                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="cat.1">
                         Romance
                     </button>
 
-                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".2">
+                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="cat.2">
                         Ulang Tahun
                     </button>
 
-                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".3">
+                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="cat.3">
                         Pernikahan
                     </button>
 
-                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".4">
+                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="cat.4">
                         Wisuda
                     </button>
 
-                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".5">
+                    <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="cat.5">
                         Seminar
                     </button>
                 </div>
@@ -260,7 +260,7 @@
             {{-- isi produk --}}
             <div class="row isotope-grid">
                 @foreach ($products as $product)
-                    <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item">
+                    <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item cat.{{ $product->id_kategori }}">
                         <div class="block2">
                             <div class="block2-pic hov-img0">
                                 <img src="{{ asset('storage/' . $product->link_img) }}" alt="{{ $product->nama_barang }}">
@@ -326,6 +326,9 @@
                                     <!-- Deskripsi Produk -->
                                     <p id="modal-product-description" class="stext-102"></p>
 
+                                    <!-- Stok Tersedia -->
+                                    <p id="modal-product-stock" class="stext-102 text-success"></p>
+                                
                                     <!-- Input Quantity -->
                                     <div class="d-flex align-items-center mb-3">
                                         <label for="modal-product-quantity"
@@ -352,43 +355,62 @@
 
                 <div class="header-cart flex-col-l p-l-65 p-r-25">
                     <div class="header-cart-title flex-w flex-sb-m p-b-8">
-                        <span class="mtext-103 cl2">
-                            Your Cart
-                        </span>
+                        <span class="mtext-103 cl2">Your Cart</span>
                         <div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
                             <i class="zmdi zmdi-close"></i>
                         </div>
                     </div>
-
+                    {{-- <!-- Checkbox "Select All" -->
+                    <div class="header-cart-select-all">
+                        <input type="checkbox" id="select-all" />
+                        <label for="select-all">Select All</label>
+                    </div> --}}
                     <div class="header-cart-content flex-w js-pscroll">
-                        <ul class="header-cart-wrapitem w-full">
-                            @foreach ($cartItems as $item)
-                                <li class="header-cart-item flex-w flex-t m-b-12">
+                        <ul class="header-cart-wrapitem w-full" id="cart-items-list">
+                            @forelse ($cartItems as $item)
+                                <li class="header-cart-item flex-w flex-t m-b-12" id="cart-item-{{ $item->id }}">
+                                    <div class="product-checkbox-container">
+                                        <input type="checkbox" class="product-checkbox" data-id="{{ $item->id }}"
+                                            data-price="{{ $item->harga }}" data-name="{{ $item->nama_barang }}"
+                                            data-quantity="{{ $item->jumlah_barang }}" />
+                                    </div>
+
                                     <div class="header-cart-item-img">
                                         @if ($item->link_img)
-                                            <img src="{{ asset('storage/' . $item->link_img) }}" alt="IMG">
+                                            <img src="{{ asset('storage/' . $item->link_img) }}"
+                                                alt="{{ $item->nama_barang }}">
                                         @else
                                             <img src="{{ asset('images/no-image.png') }}" alt="No Image">
                                         @endif
                                     </div>
 
                                     <div class="header-cart-item-txt p-t-8">
-                                        <a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+                                        <label class="header-cart-item-name m-b-18 hov-cl1 trans-04">
                                             {{ $item->nama_barang }}
-                                        </a>
+                                        </label>
 
-                                        <span class="header-cart-item-info">
-                                            {{-- {{ $item->jumlah_barang }} x Rp {{ number_format($item->harga, 0, ',', '.') }} --}}
+                                        <span class="header-cart-item-info" id="price-{{ $item->id }}">
+                                            Rp {{ number_format($item->harga, 0, ',', '.') }} x
+                                            <span id="quantity-{{ $item->id }}">{{ $item->jumlah_barang }}</span>
                                         </span>
+
+                                        <!-- Tombol Hapus Produk -->
+                                        <button class="btn-delete-product" data-id="{{ $item->id }}"
+                                            style="display:none;">
+                                            Hapus
+                                        </button>
                                     </div>
                                 </li>
-                            @endforeach
+                            @empty
+                                <li class="text-center">Your cart is empty!</li>
+                            @endforelse
                         </ul>
 
                         <div class="w-full">
                             <div class="header-cart-total w-full p-tb-40">
-                                Total: Rp {{ number_format($total, 0, ',', '.') }}
+                                Total: Rp <span id="total-price">0</span>
                             </div>
+
                             <div class="header-cart-buttons flex-w w-full">
                                 <form action="{{ route('cart.checkout') }}" method="POST">
                                     @csrf
@@ -402,6 +424,7 @@
                     </div>
                 </div>
             </div>
+
 
 
             <!-- Load more -->
