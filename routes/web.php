@@ -102,6 +102,7 @@ Route::get('/dashboard', [DashboardController::class, 'showProducts'])->name('us
 Route::get('/d', function () {
     return view('welcome');
 });
+<<<<<<< HEAD
 =======
 =======
 Route::middleware(['auth'])->group(function () {
@@ -115,3 +116,13 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 >>>>>>> 5bf4f071861607f9f8b8b8ea4441d3789ff3f026
 >>>>>>> 9e3fae605f9826c83057db3cad8c33aa87cf42ba
+=======
+
+Route::get('/blog', function () {
+    return view('blog');
+});
+
+Route::get('/about', function () {
+    return view('about');
+});
+>>>>>>> farid

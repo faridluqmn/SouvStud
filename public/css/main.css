@@ -454,6 +454,93 @@ body {
 }
 
 
+/* cart */
+/* Penataan item keranjang secara fleksibel */
+/* Menyusun checkbox dan gambar produk */
+.product-checkbox-container {
+  margin-right: 15px;
+  display: flex;
+  align-items: center;
+}
+
+/* Ukuran dan styling checkbox */
+.product-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+/* Styling gambar produk */
+.header-cart-item-img img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+/* Styling informasi produk */
+.header-cart-item-txt {
+  flex-grow: 1;
+  padding-left: 15px;
+}
+
+/* Styling input jumlah produk */
+.quantity-input {
+  width: 60px;
+  padding: 5px;
+  margin-left: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-align: center;
+  font-size: 14px;
+}
+
+/* Tombol Hapus Produk */
+.btn-delete-product {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  font-size: 12px;
+  cursor: pointer;
+  display: none;
+  margin-top: 5px;
+  border-radius: 5px;
+}
+
+/* Efek hover untuk tombol hapus */
+.btn-delete-product:hover {
+  background-color: #e04b4b;
+}
+
+/* Styling total harga */
+.header-cart-total {
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+/* Styling tombol Checkout */
+.header-cart-buttons form button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  background-color: #ff7f50;
+  color: white;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.header-cart-buttons form button:hover {
+  background-color: #ff5733;
+}
+
+/* Efek untuk hover */
+.header-cart-item-name:hover {
+  color: #ff5733;
+}
+
 
 
 /*//////////////////////////////////////////////////////////////////

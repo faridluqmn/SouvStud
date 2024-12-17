@@ -30,26 +30,34 @@
                 <!-- Logo desktop -->
                 <a href="#" class="logo">
 <<<<<<< HEAD
+<<<<<<< HEAD
                     <img src="" alt="IMG-LOGO-SOUVSTUD">
 =======
                     <img src="{{ asset('images/icons/logosovstud.png') }}" alt="IMG-LOGO" style="width: 130px; height: auto;">
 >>>>>>> 9e3fae605f9826c83057db3cad8c33aa87cf42ba
+=======
+                    <img src="images/logosovstud.png" alt="IMG-LOGO-SOUVSTUD" style="width: 120px; height: auto;">
+>>>>>>> farid
                 </a>
 
                 <!-- Menu desktop -->
                 <div class="menu-desktop">
                     <ul class="main-menu">
                         <li class="active-menu">
+<<<<<<< HEAD
                             <a href="dashboard">Home</a>
                             <ul class="sub-menu">
                                 <li><a href="index.html">Homepage 1</a></li>
                                 <li><a href="home-02.html">Homepage 2</a></li>
                                 <li><a href="home-03.html">Homepage 3</a></li>
                             </ul>
+=======
+                            <a href="{{ route('user.index')}}">Home</a>
+>>>>>>> farid
                         </li>
 
                         <li>
-                            <a href="product.html">Shop</a>
+                            <a href="{{ url('')}}">Shop</a>
                         </li>
 
                         <li class="label1" data-label1="hot">
@@ -57,11 +65,15 @@
                         </li>
 
                         <li>
-                            <a href="blog.html">Blog</a>
+                            <a href="{{ url('blog')}}">Blog</a>
                         </li>
 
                         <li>
+<<<<<<< HEAD
                             <a href="customizations">Custom</a>
+=======
+                            <a href="{{ url('about')}}">About</a>
+>>>>>>> farid
                         </li>
 
                         <li>
