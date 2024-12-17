@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Chat extends Model
 {
     protected $fillable = [
+<<<<<<< HEAD
+=======
+        'customization_id',
+>>>>>>> 9e3fae605f9826c83057db3cad8c33aa87cf42ba
         'sender_id',
         'receiver_id',
         'message',
@@ -23,4 +27,11 @@ class Chat extends Model
         return $this->belongsTo(User::class, 'receiver_id');
     }
 
+<<<<<<< HEAD
+=======
+    public function customization()
+    {
+        return $this->belongsTo(Customization::class);
+    }
+>>>>>>> 9e3fae605f9826c83057db3cad8c33aa87cf42ba
 }
