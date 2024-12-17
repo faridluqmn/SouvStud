@@ -16,8 +16,8 @@ return new class extends Migration
             $table->timestamps();
             $table->date('tanggal_pembayaran');
             $table->decimal('jumlah_pembayaran');
-            $table->str('metode_pembayaran');
-            $table->str('status_pembayaran');
+            $table->string('metode_pembayaran');
+            $table->string('status_pembayaran');
         });
     }
 

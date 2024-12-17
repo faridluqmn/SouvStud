@@ -1,3 +1,5 @@
+{{-- gausa diapa"in yaa --}}
+{{-- boleh di copy --}}
 @extends('layout.app')
 
 @section('cart')

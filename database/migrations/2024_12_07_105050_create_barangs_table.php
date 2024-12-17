@@ -15,8 +15,10 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('nama_barang');
+            $table->string('link_img');
             $table->text('deskripsi');
             $table->decimal('harga');
+            $table->enum('status', ['Available', 'Not Available']);
             $table->unsignedBigInteger('id_kategori');
             $table->foreign('id_kategori')->references('id')->on('kategori_barangs')->onDelete('cascade');
         });

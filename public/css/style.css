@@ -1,0 +1,101 @@
+/* Modal Container */
+.bg-light {
+    background-color: #f8f9fa !important;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.bg-light:hover {
+    transform: scale(1.01);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Produk Nama */
+h4.mtext-105 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    text-transform: capitalize;
+    letter-spacing: 1px;
+}
+
+/* Harga Produk */
+span.mtext-106 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #28a745;
+    margin-bottom: 15px;
+    display: block;
+}
+
+/* Deskripsi Produk */
+p.stext-102 {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Quantity Input */
+#modal-product-quantity {
+    width: 100px;
+    padding: 6px;
+    font-size: 1rem;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+#modal-product-quantity:focus {
+    border-color: #28a745;
+    outline: none;
+    box-shadow: 0 0 5px rgba(40, 167, 69, 0.5);
+}
+
+/* Add to Cart Button */
+#add-to-cart-btn {
+    background-color: #28a745;
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#add-to-cart-btn:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+#add-to-cart-btn:focus {
+    outline: none;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    h4.mtext-105 {
+        font-size: 1.5rem;
+    }
+
+    span.mtext-106 {
+        font-size: 1.2rem;
+    }
+
+    p.stext-102 {
+        font-size: 0.85rem;
+    }
+
+    #modal-product-quantity {
+        width: 80px;
+        font-size: 0.9rem;
+    }
+}

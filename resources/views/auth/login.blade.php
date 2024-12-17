@@ -1,18 +1,103 @@
-<form >
-    <h4 class="mtext-105 cl2 txt-center p-b-30">
-        Send Us A Message
-    </h4>
+<!DOCTYPE html>
+<html lang="en">
 
-    <div class="bor8 m-b-20 how-pos4-parent">
-        <input class="stext-111 cl2 plh3 size-116 p-l-62 p-r-30" type="text" name="email" placeholder="Your Email Address">
-        <img class="how-pos4 pointer-none" src="images/icons/icon-email.png" alt="ICON">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Coza Store Theme</title>
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Raleway', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+            background: #fff;
+            padding: 40px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .login-container h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .login-container p {
+            color: #999;
+            margin-bottom: 30px;
+        }
+
+        .login-container input {
+            width: 90%;
+            padding: 12px 20px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .login-container button {
+            width: 100%;
+            padding: 12px;
+            background-color: rgb(0, 0, 0);
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .login-container button:hover {
+            background-color: rgb(91, 92, 92);
+        }
+
+        .login-container a {
+            display: block;
+            margin-top: 20px;
+            color: rgb(1, 1, 1);
+            text-decoration: none;
+        }
+
+        .login-container a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <h1>Login</h1>
+        <p>Welcome back! Please login to your account.</p>
+
+        @if (session('success'))
+            <div style="color: green; margin-bottom: 20px;">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <form action="{{ route('login.submit') }}" method="POST">
+            @csrf
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <a href="#">Forgot Password?</a>
+        <a href="{{ route('register') }}">Create a New Account</a>
     </div>
 
-    <div class="bor8 m-b-30">
-        <textarea class="stext-111 cl2 plh3 size-120 p-lr-28 p-tb-25" name="msg" placeholder="How Can We Help?"></textarea>
-    </div>
+</body>
 
-    <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
-        Submit
-    </button>
-</form>
+</html>

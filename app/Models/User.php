@@ -18,10 +18,13 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
+
+
     protected $fillable = [
         'name',
         'email',
         'password',
+        'id_role', // Tambahkan ini
     ];
 
     // Relasi ke tabel keranjangs
@@ -54,6 +57,6 @@ class User extends Authenticatable
     }
     public function role()
     {
-        return $this->belongsTo(RoleModel::class);
+        return $this->belongsTo(RoleModel::class, 'id_role', 'id');  // id_role di users berhubungan dengan idrole di nama_role
     }
 }

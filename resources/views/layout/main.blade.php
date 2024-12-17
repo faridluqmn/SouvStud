@@ -9,17 +9,7 @@
 
         <!-- Main Content -->
         <main class="content">
-            <!-- Cart -->
-            @yield('cart')
-
-            <!-- Slider -->
-            @yield('slider')
-
-            <!-- Banner -->
-            @yield('banner')
-
-            <!-- Product -->
-            @yield('product')
+            @yield('content')
         </main>
 
         <!-- Footer -->
@@ -32,8 +22,6 @@
             <i class="zmdi zmdi-chevron-up"></i>
         </span>
     </div>
-
-    @include('layout.jsproduk')
     @include('layout.js')
 </body>
 
