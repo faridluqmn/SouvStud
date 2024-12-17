@@ -20,7 +20,7 @@
                             </a>
                             <a href="#" class="flex-c-m trans-04 p-lr-25">
                                 EN
-                            </a> 
+                            </a>
                             <a href="#" class="flex-c-m trans-04 p-lr-25">
                                 USD
                             </a>
@@ -46,10 +46,10 @@
                                         <li><a href="kupon">Coupons</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="order">Order</a></li>
-                                <li><a href="blog.html">User</a></li>
+                                <li><a href="product.html">Shop</a></li>
+                                <li><a href="blog.html">Blog</a></li>
+                                <li><a href="about.html">About</a></li>
                                 <li><a href="/chat/{{ auth()->user()->id }}">Message</a></li>
-                                <li><a href="about.html">Setting</a></li>
                             </ul>
                         </div>
 

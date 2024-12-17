@@ -35,24 +35,25 @@
                 <!-- Menu desktop -->
                 <div class="menu-desktop">
                     <ul class="main-menu">
-                        <li class="active-menu">
-                            <a href="{{ route('user.index')}}">Home</a>
+                        <li>
+                            <a href="{{ route('user.index') }}">Home</a>
                         </li>
 
-                        <li>
-                            <a href="{{ url('')}}">Shop</a>
+                        <li class="{{ Route::currentRouteName() == 'user.index' ? 'active-menu' : '' }}">
+                            <a href="{{ route('user.index') }}">Shop</a>
                         </li>
 
                         <li class="label1" data-label1="hot">
-                            <a href="shoping-cart.html">Features</a>
+                            <a href="shoping-cart.html"
+                                class="{{ request()->is('shoping-cart') ? 'active-menu' : '' }}">Features</a>
                         </li>
 
-                        <li>
-                            <a href="{{ url('blog')}}">Blog</a>
+                        <li class="{{ request()->is('blog') ? 'active-menu' : '' }}">
+                            <a href="{{ url('blog') }}">Blog</a>
                         </li>
 
-                        <li>
-                            <a href="{{ url('about')}}">About</a>
+                        <li class="{{ request()->is('about') ? 'active-menu' : '' }}">
+                            <a href="{{ url('about') }}">About</a>
                         </li>
 
                         <li>

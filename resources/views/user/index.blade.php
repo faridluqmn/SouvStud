@@ -328,7 +328,7 @@
 
                                     <!-- Stok Tersedia -->
                                     <p id="modal-product-stock" class="stext-102 text-success"></p>
-                                
+
                                     <!-- Input Quantity -->
                                     <div class="d-flex align-items-center mb-3">
                                         <label for="modal-product-quantity"
@@ -395,10 +395,7 @@
                                         </span>
 
                                         <!-- Tombol Hapus Produk -->
-                                        <button class="btn-delete-product" data-id="{{ $item->id }}"
-                                            style="display:none;">
-                                            Hapus
-                                        </button>
+                                        <button class="btn-delete-product" data-id="{{ $item->id_barang }}">Hapus</button>
                                     </div>
                                 </li>
                             @empty

@@ -336,6 +336,13 @@
     document.getElementById('add-to-cart-btn').addEventListener('click', function() {
         const productId = this.getAttribute('data-id');
         const jumlah_barang = document.getElementById('modal-product-quantity').value;
+        const stockAvailable = parseInt(document.getElementById('modal-product-quantity').max);
+
+        // Cek apakah jumlah yang diminta lebih dari stok yang tersedia
+        if (jumlah_barang > stockAvailable) {
+            alert('Cannot add more than the available stock!');
+            return;
+        }
 
         fetch('/cart/add', {
                 method: 'POST',
@@ -363,6 +370,7 @@
             });
     });
 </script>
+
 {{-- cart --}}
 <script>
     // Menghitung ulang total harga berdasarkan produk yang dipilih

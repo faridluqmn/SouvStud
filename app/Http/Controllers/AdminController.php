@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -17,6 +18,17 @@ class AdminController extends Controller
         }
         return view('admin.index'); // Tampilkan halaman admin
     }
+
+    public function coupons()
+    {
+        $coupons = DB::table('kupons')
+            ->orderBy('exp_date', 'desc')
+            ->paginate(12);
+
+        // Mengirim data kupon ke view
+        return view('admin.kupon', compact('coupons'));
+    }
+
 
     /**
      * Contoh fitur tambahan untuk admin.

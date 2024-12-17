@@ -6,6 +6,7 @@ use App\Models\Keranjang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class KeranjangController extends Controller
 {
@@ -72,5 +73,24 @@ class KeranjangController extends Controller
             DB::rollBack();
             return redirect()->back()->with('error', 'Checkout failed: ' . $e->getMessage());
         }
+    }
+
+    public function remove($productId)
+    {
+        // Mengambil keranjang dari session
+        $cart = Session::get('cart', []);
+
+        // Memastikan bahwa produk ada di dalam keranjang
+        if (isset($cart[$productId])) {
+            // Menghapus produk berdasarkan ID
+            unset($cart[$productId]);
+
+            // Menyimpan kembali keranjang ke session
+            Session::put('cart', $cart);
+
+            return response()->json(['success' => true]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Product not found in cart.']);
     }
 }
