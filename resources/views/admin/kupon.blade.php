@@ -132,8 +132,8 @@
                             <div class="form-group">
                                 <label for="tipe">Type</label>
                                 <select id="tipe" name="tipe" class="form-control" required>
-                                    <option value="discount">Fixed</option>
-                                    <option value="free_shipping">Persen</option>
+                                    <option value="Fixed">Fixed</option>
+                                    <option value="Persen">Persen</option>
                                 </select>
                             </div>
                             <div class="form-group">

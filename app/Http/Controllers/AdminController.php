@@ -42,7 +42,7 @@ class AdminController extends Controller
         $request->validate([
             'kode' => 'required|unique:kupons',
             'tipe' => 'required',
-            'value' => 'required|decimal',
+            'value' => 'required|numeric',
             'exp_date' => 'required|date',
         ]);
 
@@ -60,6 +60,40 @@ class AdminController extends Controller
         return redirect()->route('coupons.index')->with('success', 'Coupon added successfully!');
     }
 
+    public function validateCoupon(Request $request)
+    {
+        // Ambil kode kupon dan harga total dari request
+        $couponCode = $request->coupon_code;
+        $totalPrice = $request->total_price;
+
+        // Gunakan query builder dengan raw SQL untuk memeriksa apakah kupon valid
+        $coupon = DB::table('kupons')
+            ->where('kode', $couponCode)
+            ->where('exp_date', '>=', now())
+            ->first();
+
+        if (!$coupon) {
+            return response()->json(['success' => false, 'message' => 'Kupon tidak valid!']);
+        }
+
+        // Validasi kupon dan hitung diskon berdasarkan tipe kupon
+        $discountAmount = 0;
+
+        if ($coupon->tipe === 'fixed') {
+            // Jika tipe kupon 'fixed', diskon adalah nilai tetap
+            $discountAmount = $coupon->value;
+        } elseif ($coupon->tipe === 'persen') {
+            // Jika tipe kupon 'persen', diskon dihitung sebagai persen dari harga total
+            $discountAmount = $totalPrice * ($coupon->value / 100);
+        }
+
+        // Kembalikan response dengan informasi kupon yang valid
+        return response()->json([
+            'success' => true,
+            'discount_amount' => $discountAmount,
+            'message' => 'Kupon berhasil diterapkan!'
+        ]);
+    }
 
     /**
      * Contoh fitur tambahan untuk admin.

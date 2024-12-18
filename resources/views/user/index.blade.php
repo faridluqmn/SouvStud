@@ -349,7 +349,7 @@
             </div>
 
 
-            {{-- modal cart --}}
+            {{-- Modal Cart --}}
             <div class="wrap-header-cart js-panel-cart">
                 <div class="s-full js-hide-cart"></div>
 
@@ -360,11 +360,7 @@
                             <i class="zmdi zmdi-close"></i>
                         </div>
                     </div>
-                    {{-- <!-- Checkbox "Select All" -->
-                    <div class="header-cart-select-all">
-                        <input type="checkbox" id="select-all" />
-                        <label for="select-all">Select All</label>
-                    </div> --}}
+
                     <div class="header-cart-content flex-w js-pscroll">
                         <ul class="header-cart-wrapitem w-full" id="cart-items-list">
                             @forelse ($cartItems as $item)
@@ -395,7 +391,8 @@
                                         </span>
 
                                         <!-- Tombol Hapus Produk -->
-                                        <button class="btn-delete-product" data-id="{{ $item->id_barang }}">Hapus</button>
+                                        <button class="btn-delete-product"
+                                            data-id="{{ $item->id_barang }}">Hapus</button>
                                     </div>
                                 </li>
                             @empty
@@ -408,6 +405,17 @@
                                 Total: Rp <span id="total-price">0</span>
                             </div>
 
+                            {{-- Diskon dan Tombol Apply --}}
+                            <div class="header-cart-discount w-full p-tb-10">
+                                <label for="coupon-code">Kode Kupon:</label>
+                                <input type="text" id="coupon-code" name="coupon_code"
+                                    placeholder="Masukkan kode kupon" class="input-text">
+                                <button type="button" id="apply-coupon" class="btn-apply-coupon">Apply</button>
+                            </div>
+                            <div class="header-cart-total w-full p-tb-40">
+                                <div id="discount-message" class="mt-2 hidden"></div>
+                                <strong>Harga Setelah Diskon:</strong> Rp <span id="final-price">0</span>
+                            </div>
                             <div class="header-cart-buttons flex-w w-full">
                                 <form action="{{ route('cart.checkout') }}" method="POST">
                                     @csrf
@@ -421,6 +429,7 @@
                     </div>
                 </div>
             </div>
+
 
 
 

@@ -480,3 +480,61 @@
         chatBox.scrollTop = chatBox.scrollHeight;
     });
 </script>
+<script>
+    document.getElementById('apply-coupon').addEventListener('click', function() {
+        var couponCode = document.getElementById('coupon-code').value.trim();
+        var totalPrice = parseFloat(document.getElementById('total-price').innerText.replace('Rp', '').replace(
+            ',', '').trim());
+        var discountAmount = 0;
+        var discountMessage = '';
+
+        // Pastikan kode kupon tidak kosong
+        if (!couponCode) {
+            discountMessage = 'Silakan masukkan kode kupon.';
+            document.getElementById('discount-message').innerText = discountMessage;
+            document.getElementById('discount-message').classList.remove('hidden');
+            return;
+        }
+
+        // Mengirim request AJAX untuk memeriksa kupon
+        fetch('/kupon/validate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    coupon_code: couponCode,
+                    total_price: totalPrice
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Memeriksa apakah kupon valid
+                if (data.success) {
+                    discountAmount = data.discount_amount;
+                    discountMessage =
+                        `Kupon berhasil diterapkan! Diskon: Rp ${discountAmount.toLocaleString()}`;
+                } else {
+                    discountMessage = data.message || 'Kupon tidak valid!';
+                }
+
+                // Periksa apakah diskon lebih besar dari harga total (jangan sampai negatif)
+                var finalPrice = totalPrice - discountAmount;
+                if (finalPrice < 0) finalPrice = 0;
+
+                // Tampilkan pesan dan harga setelah diskon
+                document.getElementById('discount-message').innerText = discountMessage;
+                document.getElementById('final-price').innerText = `Rp ${finalPrice.toLocaleString()}`;
+
+                // Pastikan pesan muncul (tampilkan elemen discount-message jika belum ditampilkan)
+                document.getElementById('discount-message').classList.remove('hidden');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('discount-message').innerText =
+                    'Terjadi kesalahan saat memeriksa kupon.';
+                document.getElementById('discount-message').classList.remove('hidden');
+            });
+    });
+</script>

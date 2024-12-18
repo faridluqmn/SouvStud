@@ -75,8 +75,57 @@ class KeranjangController extends Controller
         }
     }
 
-    public function withCoupons() {
-        
+    public function withCoupons(Request $request)
+    {
+        // Validasi input kupon
+        $request->validate([
+            'kode' => 'required|string',
+        ]);
+
+        // Ambil kode kupon dari request
+        $couponCode = $request->kode;
+
+        // Ambil kupon dari database menggunakan query builder
+        $coupon = DB::table('kupons') // Pastikan nama tabel kupon sesuai dengan yang ada di database
+            ->where('kode', $couponCode)
+            ->where('exp_date', '>=', now())  // Pastikan kupon belum kedaluwarsa
+            ->first();
+
+        // Cek apakah kupon valid dan ada
+        if (!$coupon) {
+            return redirect()->back()->with('error', 'Kupon tidak valid atau sudah kedaluwarsa.');
+        }
+
+        // Ambil harga total keranjang dari session
+        $totalPrice = session('keranjang_total_price', 0);
+
+        // Cek jika total harga keranjang sudah ada
+        if ($totalPrice == 0) {
+            return redirect()->back()->with('error', 'Keranjang kosong.');
+        }
+
+        // Hitung diskon berdasarkan tipe kupon
+        $discountAmount = 0;
+        if ($coupon->tipe === 'fixed') {
+            // Kupon fixed value mengurangi harga total dengan nilai diskon tetap
+            $discountAmount = min($coupon->value, $totalPrice);  // Pastikan diskon tidak melebihi total harga
+        } elseif ($coupon->tipe === 'persen') {
+            // Kupon persen mengurangi harga berdasarkan persentase
+            $discountAmount = $totalPrice * ($coupon->value / 100);
+        }
+
+        // Hitung harga setelah diskon
+        $finalPrice = $totalPrice - $discountAmount;
+
+        // Simpan informasi kupon dan diskon ke session
+        session([
+            'applied_coupon' => $coupon->kode,
+            'coupon_discount' => $discountAmount,
+            'final_price' => $finalPrice,
+        ]);
+
+        // Kembali ke halaman sebelumnya dengan pesan sukses
+        return redirect()->back()->with('success', "Kupon '{$coupon->kode}' berhasil diterapkan! Diskon: Rp {$discountAmount}, Harga akhir: Rp {$finalPrice}.");
     }
 
     public function remove($productId)

@@ -52,6 +52,7 @@ Route::delete('/cart/remove/{productId}', [KeranjangController::class, 'remove']
 Route::get('/kupon', [AdminController::class, 'coupons'])->name('coupons.index');
 Route::post('/kupon/simpan', [AdminController::class, 'savecoupons'])->name('coupons.store');
 Route::post('/kupon/pakai', [KeranjangController::class, 'withCoupons'])->name('coupons.apply');
+Route::post('/kupon/validate', [AdminController::class, 'validateCoupon'])->name('coupons.validate');
 
 Route::get('/data-user', [AdminController::class, 'manageUsers'])->name('userlog');
 Route::delete('admin/users/{user}', [AdminController::class, 'deleteUser'])->name('user.destroy');
