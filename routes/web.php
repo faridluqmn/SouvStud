@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
@@ -35,8 +37,7 @@ Route::delete('/{id}', [ProductController::class, 'destroy'])->name('categories.
 //produk
 Route::get('/produk', [ProductController::class, 'showProduct'])->name('product.index');
 Route::post('/produk/simpan', [ProductController::class, 'storeProd'])->name('product.store');
-Route::get('/{id}/edit', [ProductController::class, 'edit'])->name('product.edit');
-Route::put('/{id}', [ProductController::class, 'update'])->name('product.update');
+Route::put('/product/update/{id}', [ProductController::class, 'update'])->name('product.update');
 Route::delete('/product/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
 
 //chat
@@ -54,9 +55,15 @@ Route::post('/kupon/simpan', [AdminController::class, 'savecoupons'])->name('cou
 Route::post('/kupon/pakai', [KeranjangController::class, 'withCoupons'])->name('coupons.apply');
 Route::post('/kupon/validate', [AdminController::class, 'validateCoupon'])->name('coupons.validate');
 
+Route::get('/use-coupons', [UserController::class, 'kupon'])->name('user.coupons');
+
 Route::get('/data-user', [AdminController::class, 'manageUsers'])->name('userlog');
 Route::delete('admin/users/{user}', [AdminController::class, 'deleteUser'])->name('user.destroy');
 
+Route::get('/get-stock/{id}', function ($id) {
+    $stok = DB::table('stok_barangs')->where('id_barang', $id)->value('jumlah_stok');
+    return response()->json(['jumlah_stok' => $stok ?? 0]);
+});
 
 Route::get('/blog', function () {
     return view('blog');

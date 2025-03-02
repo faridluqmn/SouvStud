@@ -54,6 +54,14 @@ class UserController extends Controller
         return view('user.index', compact('products', 'categories', 'cartItems', 'total'));
     }
 
+    public function kupon()
+    {
+        // Ambil kupon yang masih berlaku dengan raw SQL
+        $coupons = DB::select("SELECT * FROM kupons");
+
+        return view('user.kupon', compact('coupons'));
+    }
+
     /**
      * Contoh fitur tambahan untuk user.
      */

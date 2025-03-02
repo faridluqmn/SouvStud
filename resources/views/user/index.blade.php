@@ -331,8 +331,8 @@
 
                                     <!-- Input Quantity -->
                                     <div class="d-flex align-items-center mb-3">
-                                        <label for="modal-product-quantity"
-                                            class="me-3 font-weight-bold">Quantity:</label>
+                                        <label for="modal-product-quantity" class="me-3 font-weight-bold">Quantity:
+                                        </label>
                                         <input id="modal-product-quantity" type="number" value="1" min="1">
                                     </div>
 
@@ -391,8 +391,10 @@
                                         </span>
 
                                         <!-- Tombol Hapus Produk -->
-                                        <button class="btn-delete-product"
-                                            data-id="{{ $item->id_barang }}">Hapus</button>
+                                        <button class="btn-delete-product" data-id="{{ $item->id }}"
+                                            data-price="{{ $item->harga }}">
+                                            Hapus
+                                        </button>
                                     </div>
                                 </li>
                             @empty
@@ -419,10 +421,7 @@
                             <div class="header-cart-buttons flex-w w-full">
                                 <form action="{{ route('cart.checkout') }}" method="POST">
                                     @csrf
-                                    <button type="submit"
-                                        class="flex-c-m stext-101 cl0 size-107 bg3 bor2 hov-btn3 p-lr-15 trans-04 m-b-10">
-                                        Check Out
-                                    </button>
+                                    <button id="checkout-btn" class="btn-checkout">Check Out</button>
                                 </form>
                             </div>
                         </div>
@@ -442,3 +441,21 @@
         </div>
     </section>
 @endsection
+
+
+<script>
+    // Ambil stok dari database berdasarkan id_barang  (USER BISA , ADMIN GABISA) buat tampilan produk
+    async function getStock(id) {
+        try {
+            let response = await fetch(`/get-stock/${id}`);
+            let data = await response.json();
+            console.log('Fetched data:', data); // Debug isi response
+
+            return data.jumlah_stok || 0; // Pastikan mengembalikan stok atau 0 jika undefined
+        } catch (error) {
+            console.error('Error fetching stock:', error.message);
+            return 0; // Kembalikan 0 daripada teks agar tidak merusak tampilan
+        }
+    }
+    setInterval(() => getStock({{ $product->id }}), 10000);
+</script>

@@ -91,20 +91,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($products as $item)
+                            @foreach ($products as $product)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $item->nama_barang }}</td>
+                                    <td>{{ $product->nama_barang }}</td>
                                     <td>
-                                        @if ($item->link_img)
-                                            <img src="{{ asset('images/' . $item->link_img) }}" alt="Product Image"
+                                        @if ($product->link_img)
+                                            <img src="{{ asset('images/' . $product->link_img) }}" alt="Product Image"
                                                 style="width: 100px;">
                                         @else
                                             No Image
                                         @endif
                                     </td>
-                                    <td>{{ $item->jumlah_stok }} pcs</td>
-                                    <td>{{ $item->harga }} /pcs</td>
+                                    <td>{{ $product->jumlah_stok }} pcs</td>
+                                    <td>{{ $product->harga }} /pcs</td>
                                 </tr>
                             @endforeach
                         </tbody>

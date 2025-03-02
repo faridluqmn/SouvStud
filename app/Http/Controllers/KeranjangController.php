@@ -14,7 +14,21 @@ class KeranjangController extends Controller
     {
         $userId = auth()->id();  // Mendapatkan ID user yang sedang login
         $productId = $request->id_barang;  // ID barang yang ingin ditambahkan
-        $quantity = $request->jumlah_barang;  // Jumlah barang yang ingin ditambahkan
+        $quantity = (int) $request->jumlah_barang;  // Jumlah barang yang ingin ditambahkan
+
+        // Validasi input
+        if ($quantity <= 0) {
+            return response()->json(['success' => false, 'message' => 'Invalid quantity!'], 400);
+        }
+
+        // Ambil stok barang dari database
+        $product = DB::table('stok_barangs')
+            ->where('id_barang', $productId)
+            ->first();
+
+        if (!$product) {
+            return response()->json(['success' => false, 'message' => 'Product not found!'], 404);
+        }
 
         // Cek apakah barang sudah ada di keranjang
         $existingItem = DB::table('keranjangs')
@@ -22,56 +36,94 @@ class KeranjangController extends Controller
             ->where('id_barang', $productId)
             ->first();
 
-        if ($existingItem) {
-            // Jika barang sudah ada, update jumlahnya
-            DB::table('keranjangs')
-                ->where('id_user', $userId)
-                ->where('id_barang', $productId)
-                ->update([
-                    'jumlah_barang' => $existingItem->jumlah_barang + $quantity
-                ]);
-        } else {
-            // Jika barang belum ada, insert barang baru
-            DB::table('keranjangs')->insert([
-                'id_user' => $userId,
-                'id_barang' => $productId,
-                'jumlah_barang' => $quantity
-            ]);
-        }
+        DB::beginTransaction(); // Mulai transaksi database
 
-        return response()->json(['success' => true]);
+        try {
+            if ($existingItem) {
+                $newQuantity = $existingItem->jumlah_barang + $quantity;
+
+                // Pastikan tidak melebihi stok
+                if ($newQuantity > $product->jumlah_stok) {
+                    return response()->json(['success' => false, 'message' => 'Stock not available!'], 400);
+                }
+
+                // Update jumlah barang di keranjang
+                DB::table('keranjangs')
+                    ->where('id_user', $userId)
+                    ->where('id_barang', $productId)
+                    ->update([
+                        'jumlah_barang' => $newQuantity,
+                        'updated_at' => now()
+                    ]);
+            } else {
+                // Jika barang belum ada di keranjang, cek apakah stok cukup
+                if ($quantity > $product->jumlah_stok) {
+                    return response()->json(['success' => false, 'message' => 'Stock not available!'], 400);
+                }
+
+                // Insert barang baru ke keranjang
+                DB::table('keranjangs')->insert([
+                    'id_user' => $userId,
+                    'id_barang' => $productId,
+                    'jumlah_barang' => $quantity,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ]);
+            }
+
+            DB::commit(); // Simpan transaksi jika tidak ada masalah
+            return response()->json(['success' => true, 'message' => 'Product added to cart!']);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Batalkan transaksi jika terjadi error
+            return response()->json(['success' => false, 'message' => 'Something went wrong!'], 500);
+        }
     }
 
 
     public function checkout(Request $request)
     {
-        $userId = auth()->id(); // Ambil ID user yang login
-
-        // Ambil data keranjang dari database
-        $cartItems = DB::select("
-            SELECT id_barang, quantity AS jumlah_barang
-            FROM keranjangs
-            WHERE user_id = ?
-        ", [$userId]);
-
-        // Simpan data transaksi
         DB::beginTransaction();
+
         try {
-            foreach ($cartItems as $item) {
-                DB::insert("
-                    INSERT INTO transaksi (user_id, id_barang, jumlah_barang, created_at, updated_at)
-                    VALUES (?, ?, ?, NOW(), NOW())
-                ", [$userId, $item->id_barang, $item->jumlah_barang]);
+            $selectedItems = $request->input('selectedItems'); // Ambil ID keranjang yang dipilih
+
+            if (empty($selectedItems)) {
+                return response()->json(['success' => false, 'message' => 'Tidak ada produk yang dipilih!'], 400);
             }
 
-            // Hapus keranjang setelah checkout
-            DB::delete("DELETE FROM keranjangs WHERE user_id = ?", [$userId]);
+            foreach ($selectedItems as $cartId) {
+                // Ambil data barang berdasarkan id_keranjang
+                $cartItem = DB::select("SELECT * FROM keranjangs WHERE id = ?", [$cartId]);
+
+                if (!$cartItem) {
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'message' => "Item dengan ID $cartId tidak ditemukan!"], 400);
+                }
+
+                $cartItem = $cartItem[0]; // Karena hasil query adalah array
+                $stok = DB::select("SELECT jumlah_stok FROM stok_barangs WHERE id_barang = ? LIMIT 1", [$cartItem->id_barang]);
+
+                if (!$stok || $stok[0]->jumlah_stok < $cartItem->jumlah_barang) {
+                    DB::rollBack();
+                    return response()->json(['success' => false, 'message' => "Stok tidak cukup untuk {$cartItem->nama_barang}!"], 400);
+                }
+
+                // Kurangi stok barang
+                DB::update("UPDATE stok_barangs SET jumlah_stok = jumlah_stok - ? WHERE id_barang = ?", [$cartItem->jumlah_barang, $cartItem->id_barang]);
+
+                // Hapus barang dari keranjang setelah checkout
+                DB::delete("DELETE FROM keranjangs WHERE id = ?", [$cartId]);
+            }
 
             DB::commit();
-            return redirect()->route('cart.index')->with('success', 'Checkout successful!');
+            return response()->json(['success' => true, 'message' => 'Checkout berhasil!']);
         } catch (\Exception $e) {
             DB::rollBack();
-            return redirect()->back()->with('error', 'Checkout failed: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat checkout!',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
@@ -128,22 +180,18 @@ class KeranjangController extends Controller
         return redirect()->back()->with('success', "Kupon '{$coupon->kode}' berhasil diterapkan! Diskon: Rp {$discountAmount}, Harga akhir: Rp {$finalPrice}.");
     }
 
-    public function remove($productId)
+    public function remove($id)
     {
-        // Mengambil keranjang dari session
-        $cart = Session::get('cart', []);
+        // Cek apakah produk ada di database
+        $cartItem = DB::select('SELECT * FROM keranjangs WHERE id = ?', [$id]);
 
-        // Memastikan bahwa produk ada di dalam keranjang
-        if (isset($cart[$productId])) {
-            // Menghapus produk berdasarkan ID
-            unset($cart[$productId]);
-
-            // Menyimpan kembali keranjang ke session
-            Session::put('cart', $cart);
-
-            return response()->json(['success' => true]);
+        if (!$cartItem) {
+            return response()->json(['success' => false, 'message' => 'Item not found in cart'], 404);
         }
 
-        return response()->json(['success' => false, 'message' => 'Product not found in cart.']);
+        // Hapus produk dari database
+        DB::delete('DELETE FROM keranjangs WHERE id = ?', [$id]);
+
+        return response()->json(['success' => true]);
     }
 }

@@ -7,8 +7,6 @@ use Illuminate\Support\Facades\DB;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
 
-
-
 class ProductController extends Controller
 {
     public function showCategories()
@@ -122,6 +120,68 @@ class ProductController extends Controller
         }
     }
 
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction(); // Gunakan transaksi biar aman
+
+        try {
+            // Ambil data produk saat ini (untuk menghapus foto lama jika ada)
+            $produk = DB::table('barangs')->where('id', $id)->first();
+
+            // Cek apakah ada file gambar yang diunggah
+            if ($request->hasFile('link_img')) {
+                // Hapus gambar lama jika ada
+                if ($produk->link_img) {
+                    Storage::delete('public/' . $produk->link_img);
+                }
+
+                // Simpan gambar baru
+                $file = $request->file('link_img');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $filePath = $file->storeAs('public/images', $fileName); // Simpan ke storage
+                $filePath = str_replace('public/', '', $filePath); // Simpan path yang sesuai
+            } else {
+                $filePath = $produk->link_img; // Jika tidak ada gambar baru, tetap gunakan yang lama
+            }
+            
+            // Update tabel barangs (tanpa jumlah_stok)
+            DB::table('barangs')->where('id', $id)->update([
+                'nama_barang' => $request->nama_barang,
+                'id_kategori' => $request->id_kategori,
+                'harga' => $request->harga,
+                'deskripsi' => $request->deskripsi,
+                'updated_at' => now()
+            ]);
+
+            // Update tabel stok_barangs berdasarkan id_barang
+            DB::table('stok_barangs')->where('id_barang', $id)->update([
+                'jumlah_stok' => $request->jumlah_stok,
+                'updated_at' => now()
+            ]);
+
+            // Ambil jumlah stok terbaru
+            $stokTerbaru = DB::table('stok_barangs')
+                ->where('id_barang', $id)
+                ->value('jumlah_stok');
+
+            // Tentukan status produk
+            $status = ($stokTerbaru > 0) ? 'Available' : 'Out of Stock';
+
+            // Update status di tabel barang
+            DB::table('barangs')->where('id', $id)->update([
+                'status' => $status
+            ]);
+
+            DB::commit(); // Simpan perubahan
+
+            return redirect()->back()->with('success', 'Produk berhasil diperbarui!');
+        } catch (\Exception $e) {
+            DB::rollback(); // Batalkan perubahan jika error
+            return redirect()->back()->with('error', 'Gagal memperbarui produk: ' . $e->getMessage());
+        }
+    }
+
+
     public function destroy($id)
     {
         DB::beginTransaction();
@@ -155,80 +215,3 @@ class ProductController extends Controller
         }
     }
 }
-
-
-    // private function generateThumbnail($image, $imageName)
-    // {
-    //     // Path untuk menyimpan thumbnail
-    //     $thumbnailPath = storage_path('app/public/foto_produk/thumbnails/');
-    //     if (!file_exists($thumbnailPath)) {
-    //         mkdir($thumbnailPath, 0755, true); // Buat folder jika belum ada
-    //     }
-
-    //     // Ambil informasi gambar asli
-    //     $imageDetails = getimagesize($image->getPathname());
-    //     $mimeType = $imageDetails['mime'];
-
-    //     // Buat resource gambar berdasarkan tipe MIME
-    //     switch ($mimeType) {
-    //         case 'image/jpeg':
-    //             $img = imagecreatefromjpeg($image->getPathname());
-    //             break;
-    //         case 'image/png':
-    //             $img = imagecreatefrompng($image->getPathname());
-    //             break;
-    //         case 'image/gif':
-    //             $img = imagecreatefromgif($image->getPathname());
-    //             break;
-    //         default:
-    //             throw new \Exception('Unsupported image type: ' . $mimeType);
-    //     }
-
-    //     // Ukuran asli gambar
-    //     $originalWidth = imagesx($img);
-    //     $originalHeight = imagesy($img);
-
-    //     // Tentukan ukuran thumbnail (300x300 dengan aspek rasio)
-    //     $thumbnailWidth = 300;
-    //     $thumbnailHeight = 300;
-
-    //     if ($originalWidth > $originalHeight) {
-    //         $thumbnailHeight = (300 / $originalWidth) * $originalHeight;
-    //     } else {
-    //         $thumbnailWidth = (300 / $originalHeight) * $originalWidth;
-    //     }
-
-    //     // Buat resource gambar untuk thumbnail
-    //     $thumbnailImg = imagecreatetruecolor($thumbnailWidth, $thumbnailHeight);
-
-    //     // Salin dan ubah ukuran gambar asli ke gambar thumbnail
-    //     imagecopyresampled(
-    //         $thumbnailImg,
-    //         $img,
-    //         0,
-    //         0,
-    //         0,
-    //         0,
-    //         $thumbnailWidth,
-    //         $thumbnailHeight,
-    //         $originalWidth,
-    //         $originalHeight
-    //     );
-
-    //     // Simpan thumbnail ke path yang ditentukan
-    //     switch ($mimeType) {
-    //         case 'image/jpeg':
-    //             imagejpeg($thumbnailImg, $thumbnailPath . $imageName, 90);
-    //             break;
-    //         case 'image/png':
-    //             imagepng($thumbnailImg, $thumbnailPath . $imageName, 9);
-    //             break;
-    //         case 'image/gif':
-    //             imagegif($thumbnailImg, $thumbnailPath . $imageName);
-    //             break;
-    //     }
-
-    //     // Hapus resource gambar dari memori
-    //     imagedestroy($img);
-    //     imagedestroy($thumbnailImg);
-    // }

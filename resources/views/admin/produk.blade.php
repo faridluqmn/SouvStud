@@ -118,18 +118,17 @@
                                             <td>{{ Str::limit($item->deskripsi, 50, '...') }}</td>
                                             <td>Rp {{ number_format($item->harga, 0, ',', '.') }}</td>
                                             <td>
-                                                @if ($item->status == 'Available')
+                                                @if ($item->jumlah_stok > 0)
                                                     <span class="text-success">Available</span>
                                                 @else
-                                                    <span class="text-danger">Not Available</span>
+                                                    <span class="text-danger">Out of Stock</span>
                                                 @endif
                                             </td>
                                             <td>{{ $item->jumlah_stok }}</td>
                                             <td class="text-center">
                                                 <!-- Edit Trigger -->
                                                 <button type="button" class="btn btn-sm btn-warning"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#editModal{{ $item->id }}">
+                                                    onclick="openEditModal({{ $item->id }})">
                                                     <i class="bx bx-edit"></i> Edit
                                                 </button>
                                                 <!-- Delete Form -->
@@ -167,8 +166,7 @@
                                 <!-- Product Name -->
                                 <div class="form-group">
                                     <label>Nama Produk</label>
-                                    <input type="text" name="nama_barang" placeholder="Enter product name"
-                                        required>
+                                    <input type="text" name="nama_barang" placeholder="Enter product name" required>
                                 </div>
 
                                 <!-- Category -->
@@ -236,6 +234,78 @@
                 </div>
             </div>
 
+            {{-- edit produk --}}
+            @foreach ($products as $item)
+                <div id="editProductModal{{ $item->id }}" class="modal" style="display: none;">
+                    <div class="modal-content">
+                        <span class="close" onclick="closeEditModal({{ $item->id }})">&times;</span>
+                        <h3>Edit Product</h3>
+                        <div class="modal-body">
+                            <form method="POST" action="{{ route('product.update', $item->id) }}"
+                                enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
+                                <fieldset>
+                                    <div class="form-group">
+                                        <label>Nama Produk</label>
+                                        <input type="text" name="nama_barang" value="{{ $item->nama_barang }}"
+                                            required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Category</label>
+                                        <select name="id_kategori" required>
+                                            <option value="">Choose category</option>
+                                            @foreach ($categories as $category)
+                                                <option value="{{ $category->id }}"
+                                                    {{ $category->id == $item->id_kategori ? 'selected' : '' }}>
+                                                    {{ $category->nama_kategori }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Stock</label>
+                                        <input type="number" name="jumlah_stok" value="{{ $item->jumlah_stok }}"
+                                            required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Status</label>
+                                        <td>
+                                            @if ($item->jumlah_stok > 0)
+                                                <span class="text-success">Available</span>
+                                            @else
+                                                <span class="text-danger">Out of Stock</span>
+                                            @endif
+                                        </td>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Price</label>
+                                        <input type="number" name="harga" value="{{ $item->harga }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Current Image</label>
+                                        <div>
+                                            @if ($item->link_img)
+                                                <img src="{{ asset('storage/' . $item->link_img) }}"
+                                                    alt="Current Image" width="80">
+                                            @else
+                                                <span>No Image</span>
+                                            @endif
+                                        </div>
+                                        <label>Upload New Image</label>
+                                        <input type="file" name="link_img" accept="image/*">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Deskripsi Produk</label>
+                                        <textarea name="deskripsi" rows="4" required>{{ $item->deskripsi }}</textarea>
+                                    </div>
+                                    <button type="submit" class="submit-btn">Update Product</button>
+                                </fieldset>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
         </main>
 
         <!-- Footer -->
@@ -604,7 +674,7 @@
             }
         };
     </script>
-    
+
     <script>
         document.getElementById('imageUpload').addEventListener('change', function(event) {
             const previewContainer = document.getElementById('previewContainer');

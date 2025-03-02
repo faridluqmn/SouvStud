@@ -43,9 +43,9 @@
                             <a href="{{ route('user.index') }}">Shop</a>
                         </li>
 
-                        <li class="label1" data-label1="hot">
-                            <a href="shoping-cart.html"
-                                class="{{ request()->is('shoping-cart') ? 'active-menu' : '' }}">Features</a>
+                        <li class="label1 {{ request()->is('use-coupons') ? 'active-menu' : '' }}" data-label1="hot">
+                            <a href="{{ route('user.coupons') }}"
+                                >Discounts</a>
                         </li>
 
                         <li class="{{ request()->is('blog') ? 'active-menu' : '' }}">
